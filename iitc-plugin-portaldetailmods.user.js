@@ -254,7 +254,6 @@ function wrapper(plugin_info) {
                     el.dataset.key = key;
                     let itemimage = document.createElement('img');
                     var image = mods_getImageByKey(key,self.settings.imageMode);
-                    itemimage.title = el.textContent;
                     itemimage.src = image;
                     itemimage.style.width = "auto";
                     itemimage.style.height = "64px";
