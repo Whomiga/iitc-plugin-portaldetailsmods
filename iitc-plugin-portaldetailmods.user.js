@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.0.4
+// @version        0.0.5
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://raw.githubusercontent.com/Whomiga/iitc-plugin-portaldetailsmods/refs/heads/master/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://raw.githubusercontent.com/Whomiga/iitc-plugin-portaldetailsmods/refs/heads/master/iitc-plugin-portaldetailmods.user.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.0.4.20251022.223500';
+    self.version = '0.0.5.20251109.102600';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20251022.223500";
+    plugin_info.dateTimeVersion = "20251109.102600";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -218,10 +218,8 @@ function wrapper(plugin_info) {
             },
             width: '400px',
             height: 'auto',
-            buttons: 
-                dialogButtons,
       	    closeCallback: function () {
-		    	save_Settings();
+		    	localStorage_Save();
                 dialog_RemoveDialog(dialog_id);
 	        }
         }).dialog('option', 'buttons', dialogButtons);
@@ -313,7 +311,10 @@ function wrapper(plugin_info) {
         }
     };
 
-    function save_Settings() {
+//
+// Save Related Functions
+//
+    function localStorage_Save() {
 		const ls = {};
 		self.settings = self.settings; // Why?
 		try {
@@ -322,6 +323,7 @@ function wrapper(plugin_info) {
 		ls.settings = self.settings;
 		localStorage[KEY_SETTINGS] = JSON.stringify(ls);
 	}
+
 //
 // Main Setup Function
 //
@@ -335,6 +337,7 @@ function wrapper(plugin_info) {
         }
 
         localStorage_Init();
+        load_Settings();
 
        	$('<a href="#" title="Shows Mod Pictures on Portal Detail">')
        		.text('PortalDetailMods')
@@ -386,8 +389,6 @@ select {
         sheet.innerHTML = '.' + self.id + 'author { margin-top: 14px; font-style: italic; font-size: smaller; }';
         document.body.appendChild(sheet);
         window.addHook('portalDetailsUpdated', update_PortalDetails);
-
-        load_Settings();
 
         console.log('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
     };
