@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.0.6
+// @version        0.0.7
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,20 +21,33 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.0.6.20251213.224800';
+    self.version = '0.0.7.20251228.194000';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20251213.224800";
+    plugin_info.dateTimeVersion = "20251228.194000";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
 
     self.namespace = 'window.plugin.' + self.id + '.';
     self.pluginname = 'plugin-' + self.id;
+
+/*
+** Colors used by Interface
+*/
+    const default_Color = '#ffce00';
+
+    let default_Colors = Object.freeze({
+        Main:     default_Color,
+        Label:    default_Color,
+        Border:   '#ffffff',
+        Gadget:   '#ffffff',
+        BackGrnd: 'rgba(8, 60, 78, 0.9)',
+    });
 
 //
 // Settings
@@ -359,15 +372,15 @@ div#dialog-portaldetailmods {
 }
 
 select {
-    background-color: rgb(255,255,255);
+    background-color: ${default_Colors.Gadget};
 }
 
 /* Style the settings */
 .settings {
     padding: 8px 8px;
-    border: 1px solid #ffce00;
-    background-color: rgba(8, 60, 78, 0.9);
-    color: #ffce00;
+    border: 1px solid ${default_Colors.Border};
+    background-color: ${default_Colors.BackGrnd};
+    color: ${default_Colors.Main};
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -377,8 +390,8 @@ select {
     border: none;
     margin-left: 0px;
     margin-right: 8px;
-    background-color: rgba(8, 60, 78, 0.9);
-    color: #ffce00;
+    background-color: ${default_Colors.BackGrnd};
+    color: ${default_Colors.Label};
 }
   `).appendTo("head");
 
