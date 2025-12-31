@@ -54,7 +54,7 @@ function wrapper(plugin_info) {
 //
     const KEY_SETTINGS = "plugin-portaldetailmods";
     self.settings = {
-        imageMode: 'original',
+        imageMode: 'icon',
     };
 
 //
