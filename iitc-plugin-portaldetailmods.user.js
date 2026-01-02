@@ -218,29 +218,32 @@ function wrapper(plugin_info) {
 //  Settings
 //
         Object.entries(self.interfaceData.settings.elements).forEach(([id, element]) => {
-            var table = container.appendChild(document.createElement('table'));
-            table.className = "settings";
-            var row = table.appendChild(document.createElement('tr'));
-            var data = row.appendChild(document.createElement('td'));
-            var label = data.appendChild(document.createElement('label'));
-            label.htmlFor = "portaldetailmods-settings--" + id;
-            label.innerHTML = element.label;
-            
-            data = row.appendChild(document.createElement('td'));
-            var select = data.appendChild(document.createElement('select'));
-            select.id = 'portaldetailmods--' + id;
-            Object.values(element.options).forEach((option) => {
-                var value = select.appendChild(document.createElement('option'));
-                value.textContent = option.text;
-                value.value = option.option;
-            })
-            select.value = self.settings[element.settings];
-            select.addEventListener('change', function() {
-                self.settings[element.settings] = this.value;
-                if (element.eventhandler) {
-                    element.eventhandler();
-                }
-            });
+            switch(element.type) {
+                case 'select': 
+                    var table = container.appendChild(document.createElement('table'));
+                    table.className = "settings";
+                    var row = table.appendChild(document.createElement('tr'));
+                    var data = row.appendChild(document.createElement('td'));
+                    var label = data.appendChild(document.createElement('label'));
+                    label.htmlFor = "portaldetailmods-settings--" + id;
+                    label.innerHTML = element.label;
+                    data = row.appendChild(document.createElement('td'));
+                    var select = data.appendChild(document.createElement('select'));
+                    select.id = 'portaldetailmods--' + id;
+                    Object.values(element.options).forEach((option) => {
+                        var value = select.appendChild(document.createElement('option'));
+                        value.textContent = option.text;
+                        value.value = option.option;
+                    })
+                    select.value = self.settings[element.settings];
+                    select.addEventListener('change', function() {
+                        self.settings[element.settings] = this.value;
+                        if (element.eventhandler) {
+                            element.eventhandler();
+                        }
+                    });
+                    break;
+            }
         });
 
 //
