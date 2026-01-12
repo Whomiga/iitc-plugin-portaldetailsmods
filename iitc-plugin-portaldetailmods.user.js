@@ -79,8 +79,14 @@ function wrapper(plugin_info) {
                     eventhandler: mods_PortalDetails
                 }
             }
+        },
+        // Portal Details
+        portaldetails: {
+            mods: {
+                id: 'mods'
+            }
         }
-    })    
+   })    
 
 //
 // Settings
@@ -312,8 +318,7 @@ function wrapper(plugin_info) {
         if (mods) {
             Array.from(mods).map(el => {
                 el.title = el.title.replace(/rare/g, "Rare");
-                el.style = '';
-                el.style.display = "inline-block";
+                el.className = 'randdetails-' + self.interfaceData.portaldetails.mods.id;
                 if (el.dataset.key == undefined) {
                     key = el.textContent.toUpperCase().replace(/ /g, '_');
                 }
@@ -427,6 +432,11 @@ select {
     margin-right: 8px;
     background-color: ${self.interfaceData.settings.colors.BackGrnd};
     color: ${self.interfaceData.settings.colors.Label};
+}
+
+.randdetails-${self.interfaceData.portaldetails.mods.id} {
+    display: inline-block !important;
+    cursor: default !important;
 }
   `).appendTo("head");
 
