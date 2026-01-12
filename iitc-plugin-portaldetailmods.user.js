@@ -330,8 +330,6 @@ function wrapper(plugin_info) {
                     let itemimage = document.createElement('img');
                     var image = mods_getImageByKey(key,self.settings.imageMode);
                     itemimage.src = image;
-                    itemimage.style.width = "auto";
-                    itemimage.style.height = "64px";
                     el.innerHTML = '';
                     el.appendChild(itemimage);
                 }
@@ -437,6 +435,11 @@ select {
 .randdetails-${self.interfaceData.portaldetails.mods.id} {
     display: inline-block !important;
     cursor: default !important;
+}
+
+.randdetails-${self.interfaceData.portaldetails.mods.id} img {
+    width: auto;
+    height: 64px;
 }
   `).appendTo("head");
 
