@@ -257,7 +257,6 @@ function wrapper(plugin_info) {
             width: '400px',
             height: 'auto',
       	    closeCallback: function () {
-		    	localStorage_Save();
                 dialog_RemoveDialog(dialog_id);
 	        }
         }).dialog('option', 'buttons', { ...interfaceData.buttons});
@@ -292,6 +291,7 @@ function wrapper(plugin_info) {
                         if (element.eventhandler) {
                             element.eventhandler();
                         }
+        		    	localStorage_Save();
                     });
                     break;
             }
