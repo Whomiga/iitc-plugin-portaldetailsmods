@@ -234,34 +234,7 @@ function wrapper(plugin_info) {
 //
 //  Settings
 //
-        Object.entries(interfaceData.elements).forEach(([id, element]) => {
-            switch(element.type) {
-                case 'select': 
-                    var table = container.appendChild(document.createElement('table'));
-                    table.className = "settings";
-                    var row = table.appendChild(document.createElement('tr'));
-                    var data = row.appendChild(document.createElement('td'));
-                    var label = data.appendChild(document.createElement('label'));
-                    label.htmlFor = "portaldetailmods-settings--" + id;
-                    label.innerHTML = element.label;
-                    data = row.appendChild(document.createElement('td'));
-                    var select = data.appendChild(document.createElement('select'));
-                    select.id = 'portaldetailmods--' + id;
-                    Object.values(element.options).forEach((option) => {
-                        var value = select.appendChild(document.createElement('option'));
-                        value.textContent = option.text;
-                        value.value = option.option;
-                    })
-                    select.value = self.settings[element.settings];
-                    select.addEventListener('change', function() {
-                        self.settings[element.settings] = this.value;
-                        if (element.eventhandler) {
-                            element.eventhandler();
-                        }
-                    });
-                    break;
-            }
-        });
+        settings_CreateElements(container, interfaceData.elements);
 
 //
 // Author
@@ -289,6 +262,40 @@ function wrapper(plugin_info) {
 	        }
         }).dialog('option', 'buttons', { ...interfaceData.buttons});
         dialog_AddDialog(dialog_id, dialog);
+    }
+
+/*
+** Create Elements for Settings
+*/    
+    function settings_CreateElements(container, elements) {
+        Object.entries(elements).forEach(([id, element]) => {
+            switch(element.type) {
+                case 'select': 
+                    var table = container.appendChild(document.createElement('table'));
+                    table.className = "settings";
+                    var row = table.appendChild(document.createElement('tr'));
+                    var data = row.appendChild(document.createElement('td'));
+                    var label = data.appendChild(document.createElement('label'));
+                    label.htmlFor = "portaldetailmods-settings--" + id;
+                    label.innerHTML = element.label;
+                    data = row.appendChild(document.createElement('td'));
+                    var select = data.appendChild(document.createElement('select'));
+                    select.id = 'portaldetailmods--' + id;
+                    Object.values(element.options).forEach((option) => {
+                        var value = select.appendChild(document.createElement('option'));
+                        value.textContent = option.text;
+                        value.value = option.option;
+                    })
+                    select.value = self.settings[element.settings];
+                    select.addEventListener('change', function() {
+                        self.settings[element.settings] = this.value;
+                        if (element.eventhandler) {
+                            element.eventhandler();
+                        }
+                    });
+                    break;
+            }
+        });
     }
 
 //
