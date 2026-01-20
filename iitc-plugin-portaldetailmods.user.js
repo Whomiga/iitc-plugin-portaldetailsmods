@@ -83,7 +83,8 @@ function wrapper(plugin_info) {
                         icon:     { text: 'Icon Images',        option: 'icon' }
                     },
                     settings: 'imageMode',
-                    eventhandler: mods_PortalDetails
+                    events: ['change'],
+                    eventhandler: settings_handleImageMode
                 }
             }
         },
@@ -285,16 +286,27 @@ function wrapper(plugin_info) {
                         value.value = option.option;
                     })
                     select.value = self.settings[element.settings];
-                    select.addEventListener('change', function() {
-                        self.settings[element.settings] = this.value;
-                        if (element.eventhandler) {
-                            element.eventhandler();
-                        }
-        		    	localStorage_Save();
-                    });
+                    if (element.events) {
+                        element.events.forEach(eventType => {
+                            select.addEventListener('change', function(event) {
+                                self.settings[element.settings] = this.value;
+                                if (element.eventhandler) {
+                                    element.eventhandler(event);
+                                }
+        		    	        localStorage_Save();
+                            });
+                        });
+                    }
                     break;
             }
         });
+    }
+
+/*
+** Settings - Event Handlers
+*/
+    function settings_handleImageMode(event) {
+        mods_PortalDetails();
     }
 
 //
