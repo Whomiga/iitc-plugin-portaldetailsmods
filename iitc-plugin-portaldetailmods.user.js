@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.2.0
+// @version        0.3.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.2.0.20260118.120000';
+    self.version = '0.3.0.20260120.151500';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260118.120000";
+    plugin_info.dateTimeVersion = "20260120.151500";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
