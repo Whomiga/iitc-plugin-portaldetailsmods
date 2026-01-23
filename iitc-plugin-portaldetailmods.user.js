@@ -82,9 +82,11 @@ function wrapper(plugin_info) {
                         prime:    { text: 'Ingress Prime',      option: 'prime' },
                         icon:     { text: 'Icon Images',        option: 'icon' }
                     },
-                    settings: 'imageMode',
-                    events: ['change'],
-                    eventhandler: settings_handleImageMode
+                    settings: 'imageMode', default: 'icon',
+                    events: {
+                        types: ['change'],
+                        handler: settings_handleImageMode
+                    }
                 }
             }
         },
@@ -108,7 +110,7 @@ function wrapper(plugin_info) {
 //
     const KEY_SETTINGS = "plugin-portaldetailmods";
     self.settings = {
-        imageMode: 'icon',
+        imageMode: self.interfaceData.settings.elements.imagemode.default,
     };
 
 //
@@ -287,11 +289,11 @@ function wrapper(plugin_info) {
                     })
                     select.value = self.settings[element.settings];
                     if (element.events) {
-                        element.events.forEach(eventType => {
+                        element.events.types.forEach(eventType => {
                             select.addEventListener('change', function(event) {
                                 self.settings[element.settings] = this.value;
-                                if (element.eventhandler) {
-                                    element.eventhandler(event);
+                                if (element.events.handler) {
+                                    element.events.handler(event);
                                 }
         		    	        localStorage_Save();
                             });
