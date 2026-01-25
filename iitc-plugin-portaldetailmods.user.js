@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.4.0
+// @version        0.5.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.4.0.20260124.150000';
+    self.version = '0.5.0.20260125.172500';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260124.150000";
+    plugin_info.dateTimeVersion = "20260125.172500";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -37,11 +37,10 @@ function wrapper(plugin_info) {
     self.pluginname = 'plugin-' + self.id;
 
 /*
-** Colors used by Interface
+** Interface Colors
 */
     const default_Color = '#ffce00';
-
-    let default_Colors = Object.freeze({
+    self.interfaceColors = Object.freeze({
         Main:     default_Color,
         Label:    default_Color,
         Border:   '#ffffff',
@@ -59,11 +58,11 @@ function wrapper(plugin_info) {
             id:    'portaldetailmods',
             // Colors Used In Dialog
             colors: {
-                Main:     default_Colors.Main,
-                Label:    default_Colors.Label,
-                Border:   default_Colors.Border,
-                Gadget:   default_Colors.Gadget,
-                BackGrnd: default_Colors.BackGrnd,
+                Main:     self.interfaceColors.Main,
+                Label:    self.interfaceColors.Label,
+                Border:   self.interfaceColors.Border,
+                Gadget:   self.interfaceColors.Gadget,
+                BackGrnd: self.interfaceColors.BackGrnd,
             },
             // Buttons Used In Dialog
             buttons: {
@@ -442,7 +441,7 @@ div#dialog-${self.interfaceData.settings.id} {
 }
 
 .ui-dialog.ui-dialog-${self.interfaceData.settings.id} select {
-    background-color: ${default_Colors.Gadget};
+    background-color: ${self.interfaceColors.Gadget};
 }
 
 /* Style the settings */
