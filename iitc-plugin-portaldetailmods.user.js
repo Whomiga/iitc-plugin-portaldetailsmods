@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.7.0
+// @version        0.8.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.7.0.20260128.213600';
+    self.version = '0.8.0.20260129.233000';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260128.213600";
+    plugin_info.dateTimeVersion = "20260129.233000";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -286,7 +286,9 @@ function wrapper(plugin_info) {
         mods = document.querySelectorAll('.mods span');
         if (mods) {
             Array.from(mods).map(el => {
-                el.title = el.title.replace(/rare/g, "Rare");
+                if (el.title) {
+                    el.title = el.title.replace(/rare/g, "Rare");
+                }
                 el.className = 'randdetails-' + self.interfaceData.portaldetails.mods.id;
                 if (el.dataset.key == undefined) {
                     key = el.textContent.toUpperCase().replace(/ /g, '_');
@@ -500,7 +502,6 @@ div#dialog-${self.interfaceData.prefix + self.interfaceData.main.id} {
 
 .randdetails-${self.interfaceData.portaldetails.mods.id} {
     display: inline-block !important;
-    cursor: default !important;
 }
 
 .randdetails-${self.interfaceData.portaldetails.mods.id} img {
