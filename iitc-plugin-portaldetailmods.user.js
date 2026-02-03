@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.9.0
+// @version        0.10.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.9.0.20260131.085500';
+    self.version = '0.10.0.20260202.182200';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260131.085500";
+    plugin_info.dateTimeVersion = "20260202.182200";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -106,13 +106,6 @@ function wrapper(plugin_info) {
             }
         }
    })    
-
-//
-// Default Handler for OK Button
-//
-    function dialog_handleOKButton() {
-        $(this).dialog('close');
-    }
 
 //
 // Settings
@@ -272,6 +265,13 @@ function wrapper(plugin_info) {
         let index = dialog_OpenDialogs.findIndex(item => item.id === id);
         if (index > -1)
             dialog_OpenDialogs.splice(index,1);
+    }
+
+//
+// Default Handler for Dialog OK Button
+//
+    function dialog_handleOKButton() {
+        $(this).dialog('close');
     }
 
 //
