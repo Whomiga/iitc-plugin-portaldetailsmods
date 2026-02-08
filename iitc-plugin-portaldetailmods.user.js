@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.11.0
+// @version        0.12.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,20 +21,25 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.11.0.20260206.163500';
+    self.version = '0.12.0.20260208.124700';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260206.163500";
+    plugin_info.dateTimeVersion = "20260208.124700";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
 
     self.namespace = 'window.plugin.' + self.id + '.';
     self.pluginname = 'plugin-' + self.id;
+
+/*
+** Assorted Constants
+*/
+    const common_DefaultID = 'default';
 
 //
 // Interface Colors
@@ -55,9 +60,15 @@ function wrapper(plugin_info) {
     self.interfaceData = Object.freeze({
         // Prefix
         prefix: 'portaldetailmods-',
-        // Main Dialog
+        // Toolbox Info
+        toolbox: {
+            title: 'Shows Mod Pictures on Portal Detail',
+            text: self.title,
+            click: main_ShowDialog
+        },
+        // Main Dialog Info
         main: {
-            title: 'PortalDetailMods',
+            title: self.title,
             id:    'main',
             // Colors Used In Dialog
             colors: {
@@ -89,7 +100,7 @@ function wrapper(plugin_info) {
                                 prime:    { text: 'Ingress Prime',      option: 'prime' },
                                 icon:     { text: 'Icon Images',        option: 'icon' }
                             },
-                            settings: 'imageMode', default: 'icon',
+                            settings: 'imageMode', [common_DefaultID]: 'icon',
                             events: {
                                 types: ['change'],
                                 handler: settings_handleImageMode
@@ -99,7 +110,7 @@ function wrapper(plugin_info) {
                 }
             }
         },
-        // Portal Details
+        // Portal Details Info
         portaldetails: {
             mods: {
                 id: 'modimage'
@@ -113,7 +124,7 @@ function wrapper(plugin_info) {
     const KEY_SETTINGS = "plugin-portaldetailmods";
     const SETTINGS_PREFIX = self.interfaceData.prefix + "settings--";
     self.settings = {
-        imageMode: self.interfaceData.main.sections.settings.elements.imagemode.default,
+        imageMode: self.interfaceData.main.sections.settings.elements.imagemode[common_DefaultID],
     };
 
 //
@@ -459,9 +470,9 @@ function wrapper(plugin_info) {
         localStorage_Init();
         load_Settings();
 
-       	$('<a href="#" title="Shows Mod Pictures on Portal Detail">')
-       		.text('PortalDetailMods')
-       		.click(main_ShowDialog)
+      	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
+       		.text(self.interfaceData.toolbox.text)
+       		.click(self.interfaceData.toolbox.click)
        		.appendTo($('#toolbox'));
         $("<style>")
             .prop("type", "text/css")
