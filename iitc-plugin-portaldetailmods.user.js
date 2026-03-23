@@ -148,7 +148,7 @@ function wrapper(plugin_info) {
     function main_ShowDialog() {
         let interfaceData = self.interfaceData.main;
         let dialog_id = self.interfaceData.prefix + interfaceData.id;
-        let dialog = dialog_GetDialog(dialog_id);
+        let dialog = dialog_getDialog(dialog_id);
         if (dialog && dialog.dialog('isOpen')) {
             dialog.dialog('close');
             return;
@@ -157,7 +157,7 @@ function wrapper(plugin_info) {
         // Create the contents of the dialog
         let container = document.createElement('div');
         container.id = self.interfaceData.prefix + interfaceData.id;
-        main_CreateContents(container, interfaceData);
+        main_createContents(container, interfaceData);
 
         // Create and open the dialog
         dialog = window.dialog({
@@ -173,22 +173,22 @@ function wrapper(plugin_info) {
             width: '400px',
             height: 'auto',
       	    closeCallback: function () {
-                dialog_RemoveDialog(dialog_id);
+                dialog_removeDialog(dialog_id);
 	        }
         }).dialog('option', 'buttons', { ...interfaceData.buttons});
-        dialog_AddDialog(dialog_id, dialog);
+        dialog_addDialog(dialog_id, dialog);
     }
 
 /*
 ** Main Dialog - Contents
 */
-    function main_CreateContents(div, data) {
+    function main_createContents(div, data) {
         let settings = div.appendChild(document.createElement('div'));
         settings.className = self.interfaceData.prefix + data.id;
         let table = settings.appendChild(document.createElement('table'));
 
         //  Settings
-        settings_CreateSections(table, data.sections);
+        settings_createSections(table, data.sections);
 
         // Author
         let author = div.appendChild(document.createElement('div'));
@@ -200,7 +200,7 @@ function wrapper(plugin_info) {
 //
 // Create Sections for Settings
 //    
-    function settings_CreateSections(table, sections) {
+    function settings_createSections(table, sections) {
         Object.values(sections).forEach((section) => {
             let div = table.appendChild(document.createElement('div'))
 
@@ -208,14 +208,14 @@ function wrapper(plugin_info) {
             var data = row.appendChild(document.createElement('td'));
             var header = data.appendChild(document.createElement('h3'));
             header.innerHTML = section.label;
-            settings_CreateElements(div, section.elements);
+            settings_createElements(div, section.elements);
         });
     }
 
 //
 // Create Elements for Settings
 //    
-    function settings_CreateElements(tablebody, elements) {
+    function settings_createElements(tablebody, elements) {
         Object.entries(elements).forEach(([id, element]) => {
             switch(element.type) {
                 case 'select': 
@@ -263,14 +263,14 @@ function wrapper(plugin_info) {
 //  List of Open Dialog Windows
 //
     let dialog_OpenDialogs = [];
-    function dialog_AddDialog(id, dialog) {
+    function dialog_addDialog(id, dialog) {
         dialog_OpenDialogs.push( {
             id: id,
             dialog: dialog
         });
     }
 
-    function dialog_GetDialog(id) {
+    function dialog_getDialog(id) {
         let dialog = null;
         let index = dialog_OpenDialogs.findIndex(item => item.id === id);
         if (index > -1)
@@ -278,7 +278,7 @@ function wrapper(plugin_info) {
         return dialog;
     }
 
-    function dialog_RemoveDialog(id) {
+    function dialog_removeDialog(id) {
         let index = dialog_OpenDialogs.findIndex(item => item.id === id);
         if (index > -1)
             dialog_OpenDialogs.splice(index,1);
@@ -428,7 +428,7 @@ function wrapper(plugin_info) {
         }
     }
 
-    function load_Settings() {
+    function localStorage_loadSettings() {
         let localData = localStorage[KEY_SETTINGS];
         if (!localData || localData == "") return;
         localData = JSON.parse(localData);
@@ -468,7 +468,7 @@ function wrapper(plugin_info) {
         }
 
         localStorage_Init();
-        load_Settings();
+        localStorage_loadSettings();
 
       	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
        		.text(self.interfaceData.toolbox.text)
