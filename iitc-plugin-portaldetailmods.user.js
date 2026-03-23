@@ -64,7 +64,7 @@ function wrapper(plugin_info) {
         toolbox: {
             title: 'Shows Mod Pictures on Portal Detail',
             text: self.title,
-            click: main_ShowDialog
+            click: main_showDialog
         },
         // Main Dialog Info
         main: {
@@ -145,7 +145,7 @@ function wrapper(plugin_info) {
 // 
 // Main Dialog
 //
-    function main_ShowDialog() {
+    function main_showDialog() {
         let interfaceData = self.interfaceData.main;
         let dialog_id = self.interfaceData.prefix + interfaceData.id;
         let dialog = dialog_getDialog(dialog_id);
