@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.12.0
+// @version        0.15.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.12.0.20260208.124700';
+    self.version = '0.15.0.20260327.203200';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260208.124700";
+    plugin_info.dateTimeVersion = "20260327.203200";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -64,7 +64,6 @@ function wrapper(plugin_info) {
         toolbox: {
             title: 'Shows Mod Pictures on Portal Detail',
             text: self.title,
-            click: main_showDialog
         },
         // Main Dialog Info
         main: {
@@ -83,6 +82,7 @@ function wrapper(plugin_info) {
             buttons: {
                 ok: {
                     text: 'OK',
+                    // Callback Function
                     click: dialog_handleOKButton
                 }
             },
@@ -103,18 +103,25 @@ function wrapper(plugin_info) {
                             settings: 'imageMode', [common_DefaultID]: 'icon',
                             events: {
                                 types: ['change'],
+                                // Callback Function
                                 handler: settings_handleImageMode
                             }
                         }
                     }
                 }
-            }
+            },
+            // Callback Function
+            showDialog: main_showDialog
         },
         // Portal Details Info
         portaldetails: {
             mods: {
-                id: 'modimage'
-            }
+                id: 'modimage',
+                // Callback Function
+                handler: mods_PortalDetails
+            },
+            // Callback Function
+            handler: update_PortalDetails
         }
    });   
 
@@ -256,7 +263,7 @@ function wrapper(plugin_info) {
 // Settings - Event Handlers
 //
     function settings_handleImageMode(event) {
-        mods_PortalDetails();
+        self.interfaceData.portaldetails.mods.handler();
     }
 
 //
@@ -295,7 +302,7 @@ function wrapper(plugin_info) {
 //  Place Mods Graphics in Portal Details box
 //        
     function update_PortalDetails(p) {
-        mods_PortalDetails();
+        self.interfaceData.portaldetails.mods();
 	}
 
     // Update/Change Mods on Portal Details
@@ -472,7 +479,7 @@ function wrapper(plugin_info) {
 
       	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
        		.text(self.interfaceData.toolbox.text)
-       		.click(self.interfaceData.toolbox.click)
+       		.click(self.interfaceData.main.showDialog)
        		.appendTo($('#toolbox'));
         $("<style>")
             .prop("type", "text/css")
@@ -534,7 +541,7 @@ div#dialog-${self.interfaceData.prefix + self.interfaceData.main.id} {
         var sheet = document.createElement('style')
         sheet.innerHTML = '.' + self.id + 'author { margin-top: 14px; font-style: italic; font-size: smaller; }';
         document.body.appendChild(sheet);
-        window.addHook('portalDetailsUpdated', update_PortalDetails);
+        window.addHook('portalDetailsUpdated', self.interfaceData.portaldetails.handler);
 
         console.log('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
     };
