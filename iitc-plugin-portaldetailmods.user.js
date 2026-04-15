@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.16.0
+// @version        0.17.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.16.0.20260329.233700';
+    self.version = '0.17.0.20260415.185000';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260329.233700";
+    plugin_info.dateTimeVersion = "20260415.185000";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -131,7 +131,27 @@ function wrapper(plugin_info) {
     const KEY_SETTINGS = "plugin-portaldetailmods";
     const SETTINGS_PREFIX = self.interfaceData.prefix + "settings--";
     self.settings = {
-        imageMode: self.interfaceData.main.sections.settings.elements.imagemode[common_DefaultID],
+        ...get_Elements(self.interfaceData)
+    };
+
+/*
+** Settings Functions
+*/
+    function get_Elements(obj) {
+        let targetKey = 'elements';
+        let results = {};
+  
+        for (let key in obj) {
+            if (key === targetKey && typeof obj[key] == 'object' && obj[key] !== null) {
+                for (let subKey in obj[key]) {
+                    results[obj[key][subKey].settings] = obj[key][subKey].default;
+                }
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                // Recurse deeper into the object
+                Object.assign(results, get_Elements(obj[key]));
+            }
+        }
+        return results;
     };
 
 //
