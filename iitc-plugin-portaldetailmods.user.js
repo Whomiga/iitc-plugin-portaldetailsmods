@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.18.0
+// @version        0.19.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.18.0.20260416.155400';
+    self.version = '0.19.0.20260417.102400';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260416.155400";
+    plugin_info.dateTimeVersion = "20260417.102400";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -120,7 +120,8 @@ function wrapper(plugin_info) {
             mods: {
                 id: 'modimage',
                 // Callback Function
-                handler: mods_PortalDetails
+                handler: mods_PortalDetails,
+                owner: mods_PortalDetailsOwner
             },
             // Callback Function
             handler: update_PortalDetails
@@ -272,7 +273,7 @@ function wrapper(plugin_info) {
                             select.addEventListener(eventType, function(event) {
                                 self.settings[element.settings] = this.value;
                                 if (element.events.handler) {
-                                    element.events.handler(event);
+                                    element.events.handler(event, element);
                                 }
         		    	        localStorage_Save();
                             });
@@ -286,8 +287,27 @@ function wrapper(plugin_info) {
 //
 // Settings - Event Handlers
 //
-    function settings_handleImageMode(event) {
-        self.interfaceData.portaldetails.mods.handler();
+    function settings_handleImageMode(event, element) {
+        let portaldetails = self.interfaceData.portaldetails;
+        if (self.settings[element.settings] == 'disabled') {
+            if (self.id != portaldetails.mods.owner()) {
+                return;
+            }
+            else {
+                self.interfaceData.portaldetails.mods.handler();
+                portaldetails.mods.owner(self.id, true);
+            }
+        }
+        else {
+            if (self.id == portaldetails.mods.owner(self.id)) {
+                self.interfaceData.portaldetails.mods.handler();
+            }
+            else {
+                select = document.getElementById(SETTINGS_PREFIX + "imagemode")
+                select.value = 'disabled';
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
     }
 
 //
@@ -330,49 +350,80 @@ function wrapper(plugin_info) {
         portaldetails.mods.handler();
 	}
 
+    /* Store Current Owner of Portal Mods */
+    function mods_PortalDetailsOwner(newowner = null, clear = false) {
+        let playername = document.querySelectorAll('.playername');
+        let owner = null;
+        if (playername) {
+            el = Array.from(playername)[0];
+            if (newowner) {
+                if (clear) {
+                    if (el.dataset.modsowner == newowner) {
+                        delete el.dataset.modsowner;
+                        owner = newowner;
+                    }
+                    else {
+                        owner = el.dataset.modsowner;
+                    }
+                    return owner;
+                }
+                else {
+                    if (el.dataset.modsowner == undefined) {
+                        el.dataset.modsowner = newowner;
+                        owner = newowner;
+                    }
+                    else {
+                        owner = el.dataset.modsowner;
+                    }
+                }
+            }
+            else {
+                owner = el.dataset.modsowner;
+            }
+        }
+        return owner
+	}
+
     // Update/Change Mods on Portal Details
     function mods_PortalDetails() {
         let portaldetails = self.interfaceData.portaldetails;
+        let setting = self.settings.imageMode;
         mods = document.querySelectorAll('.mods span');
         if (mods) {
             Array.from(mods).map(el => {
-                if (self.settings.imageMode === 'disabled') {
-                    if (el.customOriginal) {
-                        if (el.customOriginal.owner == self.id) {
+                if (setting === 'disabled') {
+                    if (self.id == portaldetails.mods.owner()) {
+                        if (el.customOriginal) {
                             el.title = el.customOriginal.title;
                             el.innerHTML = el.customOriginal.innerHTML;
                             el.customOriginal = null;
                         }
                     }
                 }
-                else
-                {
+                else {
                     if (!el.customOriginal) {
                         el.customOriginal = {
-                            owner: self.id,
                             title: structuredClone(el.title),
                             innerHTML: structuredClone(el.innerHTML),
                         }
                     }
-                    if (el.customOriginal.owner == self.id) {
-                        if (el.title) {
-                            el.title = el.title.replace(/rare/g, "Rare");
-                        }
-                        if (el.dataset.key == undefined) {
-                            key = el.textContent.toUpperCase().replace(/ /g, '_');
-                        }
-                        else {
-                            key = el.dataset.key;
-                        }
-                        if (key != '') {
-                            el.className = self.interfaceData.prefix + portaldetails.mods.id;
-                            el.dataset.key = key;
-                            let itemimage = document.createElement('img');
-                            var image = mods_getImageByKey(key, self.settings.imageMode);
-                            itemimage.src = image;
-                            el.innerHTML = '';
-                            el.appendChild(itemimage);
-                        }
+                    if (el.title) {
+                        el.title = el.title.replace(/rare/g, "Rare");
+                    }
+                    if (el.dataset.key == undefined) {
+                        key = el.textContent.toUpperCase().replace(/ /g, '_');
+                    }
+                    else {
+                        key = el.dataset.key;
+                    }
+                    if (key != '') {
+                        el.className = self.interfaceData.prefix + portaldetails.mods.id;
+                        el.dataset.key = key;
+                        let itemimage = document.createElement('img');
+                        var image = mods_getImageByKey(key, setting);
+                        itemimage.src = image;
+                        el.innerHTML = '';
+                        el.appendChild(itemimage);
                     }
                 }
             });
@@ -522,6 +573,13 @@ function wrapper(plugin_info) {
 
         localStorage_Init();
         localStorage_loadSettings();
+
+        // Check/Take Mods Ownership Or Disable
+        if (self.settings.imageMode != 'disabled') {
+            if (self.id != self.interfaceData.portaldetails.mods.owner(self.id)) {
+                self.settings.imageMode = 'disabled';
+            }
+        }
 
       	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
        		.text(self.interfaceData.toolbox.text)
