@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.19.0
+// @version        0.20.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,14 +21,14 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.19.0.20260417.102400';
+    self.version = '0.20.0.20260417.180000';
     self.author = 'Whomiga';
 
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260417.102400";
+    plugin_info.dateTimeVersion = "20260417.180000";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -134,7 +134,9 @@ function wrapper(plugin_info) {
     const KEY_SETTINGS = "plugin-portaldetailmods";
     const SETTINGS_PREFIX = self.interfaceData.prefix + "settings--";
     self.settings = {
-        ...get_Elements(self.interfaceData)
+        elementData: {
+            ...get_Elements(self.interfaceData)
+        }
     };
 
 /*
@@ -267,11 +269,11 @@ function wrapper(plugin_info) {
                         option.textContent = value.text;
                         option.value = value.option;
                     })
-                    select.value = self.settings[element.settings];
+                    select.value = self.settings.elementData[element.settings];
                     if (element.events) {
                         element.events.types.forEach(eventType => {
                             select.addEventListener(eventType, function(event) {
-                                self.settings[element.settings] = this.value;
+                                self.settings.elementData[element.settings] = this.value;
                                 if (element.events.handler) {
                                     element.events.handler(event, element);
                                 }
@@ -289,7 +291,7 @@ function wrapper(plugin_info) {
 //
     function settings_handleImageMode(event, element) {
         let portaldetails = self.interfaceData.portaldetails;
-        if (self.settings[element.settings] == 'disabled') {
+        if (self.settings.elementData[element.settings] == 'disabled') {
             if (self.id != portaldetails.mods.owner()) {
                 return;
             }
@@ -387,7 +389,7 @@ function wrapper(plugin_info) {
     // Update/Change Mods on Portal Details
     function mods_PortalDetails() {
         let portaldetails = self.interfaceData.portaldetails;
-        let setting = self.settings.imageMode;
+        let setting = self.settings.elementData.imageMode;
         mods = document.querySelectorAll('.mods span');
         if (mods) {
             Array.from(mods).map(el => {
@@ -538,10 +540,18 @@ function wrapper(plugin_info) {
         localData = JSON.parse(localData);
         if (!(localData instanceof Object)) return;
         if ('settings' in localData && localData.settings instanceof Object) {
-            for (const key in self.settings) {
-                if (key in localData.settings && typeof self.settings[key] == typeof localData.settings[key]) {
-                    self.settings[key] = localData.settings[key];
-                }
+            if (localData.settings.imageMode) {
+                // Update for version 0.20.0
+                console.log(self.title + " - Updated settings for 0.20.0");
+                let tempsettings = { elementData: { ...localData.settings } };
+                // Deep Merge Of Fixed Settings
+                $.extend(true, self.settings, tempsettings);
+                // Store Fixed Settings
+                localStorage_Save();
+            }
+            else {
+                // Deep Merge
+                $.extend(true, self.settings, localData.settings);
             }
         }
     };
@@ -575,9 +585,9 @@ function wrapper(plugin_info) {
         localStorage_loadSettings();
 
         // Check/Take Mods Ownership Or Disable
-        if (self.settings.imageMode != 'disabled') {
+        if (self.settings.elementData.imageMode != 'disabled') {
             if (self.id != self.interfaceData.portaldetails.mods.owner(self.id)) {
-                self.settings.imageMode = 'disabled';
+                self.settings.elementData.imageMode = 'disabled';
             }
         }
 
