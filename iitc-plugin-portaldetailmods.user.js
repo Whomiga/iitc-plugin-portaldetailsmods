@@ -189,14 +189,14 @@ function wrapper(plugin_info) {
     const SETTINGS_PREFIX = self.interfaceData.prefix + "settings--";
     self.settings = {
         elementData: {
-            ...get_Elements(self.interfaceData)
+            ...get_elementData(self.interfaceData)
         }
     };
 
 /*
 ** Settings Functions
 */
-    function get_Elements(obj) {
+    function get_elementData(obj) {
         let targetKey = 'elements';
         let results = {};
   
@@ -207,7 +207,7 @@ function wrapper(plugin_info) {
                 }
             } else if (typeof obj[key] === 'object' && obj[key] !== null) {
                 // Recurse deeper into the object
-                Object.assign(results, get_Elements(obj[key]));
+                Object.assign(results, get_elementData(obj[key]));
             }
         }
         return results;
