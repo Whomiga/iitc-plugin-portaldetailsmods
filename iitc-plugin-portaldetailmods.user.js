@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.22.0
+// @version        0.23.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,7 +21,7 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.22.0.20260425.192800';
+    self.version = '0.23.0.20260426.113300';
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
@@ -29,7 +29,7 @@ function wrapper(plugin_info) {
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260425.192800";
+    plugin_info.dateTimeVersion = "20260426.113300";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -77,12 +77,11 @@ function wrapper(plugin_info) {
             ' h3': `padding: 0 4px 4px 0;
                 margin: 0;
                 color: ${self.interfaceColors.Header} !important;`,
-            ' label': `
-                border: none;
-                margin-left: 0px;
-                margin-right: 8px;
-                background-color: ${self.interfaceColors.BackGrnd} !important;
-                color: ${self.interfaceColors.Label} !important;`,
+            ' label': `color: ${self.interfaceColors.Label} !important;`,
+            '-innersettings': `padding: 8px 8px;
+                border: 1px solid ${self.interfaceColors.Border};
+                background-color: ${self.interfaceColors.BackGrnd};
+                color: ${self.interfaceColors.Text};`,
             'id_pre_main': 'pre_main',
             'parent_E': `
                 padding: 4px 4px;
@@ -388,6 +387,7 @@ function wrapper(plugin_info) {
     function settings_createSections(table, sections) {
         Object.values(sections).forEach((section) => {
             let div = table.appendChild(document.createElement('div'))
+            div.className = self.interfaceData.prefix + self.interfaceData.main.id + "-innersettings";
 
             var row = div.appendChild(document.createElement('tr'));
             var data = row.appendChild(document.createElement('td'));
