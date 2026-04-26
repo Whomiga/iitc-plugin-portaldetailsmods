@@ -134,7 +134,7 @@ function wrapper(plugin_info) {
             // Sections Used In Dialog
             sections: {
                 settings: {
-                    label: 'Image modes:',
+                    label: 'Image mode:',
                     // Elements Used In Section
                     elements: {
                         imagemode: {
