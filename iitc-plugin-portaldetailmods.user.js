@@ -387,8 +387,9 @@ function wrapper(plugin_info) {
     function settings_createSections(table, sections) {
         Object.values(sections).forEach((section) => {
             let div = table.appendChild(document.createElement('div'))
-            div.className = self.interfaceData.prefix + self.interfaceData.main.id + "-innersettings";
-
+            if (Object.keys(sections).length > 1) {
+                div.className = self.interfaceData.prefix + self.interfaceData.main.id + "-innersettings";
+            }
             var row = div.appendChild(document.createElement('tr'));
             var data = row.appendChild(document.createElement('td'));
             var header = data.appendChild(document.createElement('h3'));
