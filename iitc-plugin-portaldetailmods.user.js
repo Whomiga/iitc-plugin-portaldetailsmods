@@ -61,7 +61,7 @@ function wrapper(plugin_info) {
     self.interfaceCss = Object.freeze({
         // Main Dialog CSS Information
         'main': {
-            // Don't use 'parent_A' - 'parent_F' anywhere else
+            // Don't use 'parent_A' - 'parent_D' anywhere else
             'id_div_dialog': 'div#dialog-' + self.prefix + 'main',
             '*parent_A': `
                 overflow-x: hidden !important;`,
@@ -69,9 +69,6 @@ function wrapper(plugin_info) {
             'parent_B': `
                 max-width: calc(100vw - 2px);`,
             ' select': `
-                background-color: ${self.interfaceColors.Gadget} !important;`,
-            'id_select': 'select',
-            '*parent_C': `
                 background-color: ${self.interfaceColors.Gadget} !important;`,
             'id_pre_id': 'pre_id',
             ' h3': `padding: 0 4px 4px 0;
@@ -83,7 +80,7 @@ function wrapper(plugin_info) {
                 background-color: ${self.interfaceColors.BackGrnd};
                 color: ${self.interfaceColors.Text};`,
             'id_pre_main': 'pre_main',
-            'parent_E': `
+            'parent_C': `
                 padding: 4px 4px;
                 border: 1px solid ${self.interfaceColors.Border};
                 background-color: ${self.interfaceColors.BackGrnd};
@@ -92,7 +89,7 @@ function wrapper(plugin_info) {
                 flex-direction: column;
                 flex: 1;`,
             'id_pre_author': 'pre_author',
-            'parent_F': `
+            'parent_D': `
                 margin-top: 14px; font-style: italic; font-size: smaller;`,
         }
     });
@@ -243,9 +240,14 @@ function wrapper(plugin_info) {
 **  - obj.class, then obj.sub_id and then obj.tab_id
 **  - if it fails on those it will set ID = prefix + obj.id
 */
-    function init_Css(obj = self.interfaceData) {
+    function init_Css(obj = self.interfaceData, style = null) {
         let targetKey = 'css';
         let prefix = '.';
+        let addstyle = false;
+        if (style == null) {
+            style = document.createElement('style');
+            addstyle = true;
+        }
         for (let key in obj) {
             if (key === targetKey && typeof obj[key] == 'object' && obj[key] !== null) {
                 let style = document.createElement('style');
@@ -304,8 +306,11 @@ function wrapper(plugin_info) {
                 document.body.appendChild(style);
             } else if (typeof obj[key] === 'object' && obj[key] !== null) {
                 // Recurse deeper into the object
-                init_Css(obj[key]);
+                init_Css(obj[key], style);
             }
+        }
+        if (addstyle) {
+            document.body.appendChild(style);
         }
     };
 
