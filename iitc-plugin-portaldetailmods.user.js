@@ -49,6 +49,8 @@ function wrapper(plugin_info) {
     self.interfaceColors = Object.freeze({
         Main:     default_Color,
         Label:    '#ffffff',
+        Author:   '#ffffff',
+        Text:     '#ffffff',
         Border:   '#ffffff',
         Gadget:   '#ffffff',
         Header:   default_Color,
@@ -71,8 +73,9 @@ function wrapper(plugin_info) {
             ' select': `
                 background-color: ${self.interfaceColors.Gadget} !important;`,
             'id_pre_id': 'pre_id',
-            ' h3': `padding: 0 4px 4px 0;
-                margin: 0;
+            ' h3': `
+                margin-top:    0px !important;
+                margin-bottom: 4px !important;
                 color: ${self.interfaceColors.Header} !important;`,
             ' label': `color: ${self.interfaceColors.Label} !important;`,
             '-innersettings': `padding: 8px 8px;
@@ -90,7 +93,10 @@ function wrapper(plugin_info) {
                 flex: 1;`,
             'id_pre_author': 'pre_author',
             'parent_D': `
-                margin-top: 14px; font-style: italic; font-size: smaller;`,
+                color: ${self.interfaceColors.Author};
+                margin-top: 8px; 
+                font-style: italic; 
+                font-size: smaller;`,
         }
     });
 //
@@ -377,10 +383,12 @@ function wrapper(plugin_info) {
         let table = settings.appendChild(document.createElement('table'));
 
         //  Settings
-        settings_createSections(table, main.sections);
+        let area_1 = table.appendChild(document.createElement('tr')).appendChild(document.createElement('td'));
+        settings_createSections(area_1, main.sections);
 
         // Author
-        let author = div.appendChild(document.createElement('div'));
+        let area_2 = table.appendChild(document.createElement('tr')).appendChild(document.createElement('td'));
+        let author = area_2.appendChild(document.createElement('div'));
         author.className = self.prefix + 'author';
         author.innerHTML = self.title + ' version ' + self.version + ' by ' + self.author;
         return div;
@@ -389,17 +397,17 @@ function wrapper(plugin_info) {
 //
 // Create Sections for Settings
 //    
-    function settings_createSections(table, sections) {
+    function settings_createSections(area, sections) {
         Object.values(sections).forEach((section) => {
-            let div = table.appendChild(document.createElement('div'))
-            if (Object.keys(sections).length > 1) {
-                div.className = self.interfaceData.prefix + self.interfaceData.main.id + "-innersettings";
-            }
-            var row = div.appendChild(document.createElement('tr'));
+            let div = area.appendChild(document.createElement('div'))
+            div.className = self.interfaceData.prefix + self.interfaceData.main.id + "-innersettings";
+            var table = div.appendChild(document.createElement('table'));
+            table.style.width = '100%';
+            var row = table.appendChild(document.createElement('tr'));
             var data = row.appendChild(document.createElement('td'));
             var header = data.appendChild(document.createElement('h3'));
             header.innerHTML = section.label;
-            settings_createElements(div, section.elements);
+            settings_createElements(table, section.elements, { newrow: true });
         });
     }
 
