@@ -116,6 +116,7 @@ function wrapper(plugin_info) {
             id:    'main',
             // Colors Used In Dialog
             css: {
+                comment: 'Main Dialog',
                 ...self.interfaceCss.main
             },
             colors: {
@@ -169,6 +170,7 @@ function wrapper(plugin_info) {
                 id: 'modimage',
                 // CSS Information
                 css: {
+                    comment: 'Portal Details',
                     id_pre_id: 'pre_id',
                     parent_1: `
                         display: inline-block !important`,
@@ -252,11 +254,11 @@ function wrapper(plugin_info) {
         let addstyle = false;
         if (style == null) {
             style = document.createElement('style');
+            style.innerHTML += `\n/*\n** Begin CSS for ` + self.title + `\n*/\n`;
             addstyle = true;
         }
         for (let key in obj) {
             if (key === targetKey && typeof obj[key] == 'object' && obj[key] !== null) {
-                let style = document.createElement('style');
                 id = (obj.class || obj.sub_id || obj.tab_id ||  self.prefix + obj.id);
                 Object.entries(obj.css).forEach(([subKey, value]) => {
                     let add_prefix = false;
@@ -290,17 +292,25 @@ function wrapper(plugin_info) {
                         subKey = 'parent';
                     }
                     switch(subKey) {
+                        case 'comment':
+                            style.innerHTML += '\n/* ' + value + ' */';
+                            break;
                         case 'parent':
                             style.innerHTML += prefix + id + ' {' + value + '}'; 
                             break;
                         case "content":
+                            let needlf = false;
                             Object.entries(value).forEach(([type, content]) => {
+                                if (needlf) {
+                                    style.innerHTML += '\n';
+                                    needlf = false;
+                                }
                                 switch(type) {
                                     case 'parent':
                                         style.innerHTML += prefix + id + 'content {' + content + '}'; 
+                                        needlf = true; 
                                         break;
                                 }
-                                style.innerHTML += "\n";
                             });
                             break;
                         default:
@@ -316,7 +326,9 @@ function wrapper(plugin_info) {
             }
         }
         if (addstyle) {
+            style.innerHTML += `/*\n** End CSS for ` + self.title + `\n*/\n`;
             document.body.appendChild(style);
+//            console.info(self.title, style);
         }
     };
 
