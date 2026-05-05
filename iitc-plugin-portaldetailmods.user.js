@@ -740,6 +740,7 @@ function wrapper(plugin_info) {
             else {
                 // Deep Merge
                 $.extend(true, self.settings, localData.settings);
+                localStorage_Save();
             }
         }
     };
