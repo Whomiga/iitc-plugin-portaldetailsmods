@@ -202,6 +202,11 @@ function wrapper(plugin_info) {
     const KEY_SETTINGS = "plugin-portaldetailmods";
     const SETTINGS_PREFIX = self.interfaceData.prefix + "settings--";
     self.settings = {
+        // Version Info
+        versionData: {
+            version: self.version
+        },
+        // Element values
         elementData: {
             ...get_elementData(self.interfaceData)
         }
