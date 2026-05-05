@@ -25,6 +25,13 @@ function wrapper(plugin_info) {
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
+   // Debug Output
+    self.debugTypes = Object.freeze({
+        enabled:  false,
+        initCss:  true,
+        settings: true,
+    });
+
     // Name of the IITC build for first-party plugins
     plugin_info.buildName = "PortalDetailMods";
 
@@ -77,8 +84,10 @@ function wrapper(plugin_info) {
                 margin-top:    0px !important;
                 margin-bottom: 4px !important;
                 color: ${self.interfaceColors.Header} !important;`,
-            ' label': `color: ${self.interfaceColors.Label} !important;`,
-            '-innersettings': `padding: 8px 8px;
+            ' label': `
+                color: ${self.interfaceColors.Label} !important;`,
+            '-innersettings': `
+                padding: 8px 8px;
                 border: 1px solid ${self.interfaceColors.Border};
                 background-color: ${self.interfaceColors.BackGrnd};
                 color: ${self.interfaceColors.Text};`,
@@ -238,8 +247,6 @@ function wrapper(plugin_info) {
 **  parent?? - must be unique in CSS
 **   - parent_1: value = '.|#' + ID + '{ value }'
 **   - parent_2: value = '.|#' + ID + '{ value }'
-**  content
-**   - content: parent: value = '.|# + ID + 'content { value }'
 **  otherwise
 **  key: subkey = '.|#' + ID + 'key { subkey }'
 **
@@ -293,33 +300,17 @@ function wrapper(plugin_info) {
                     }
                     switch(subKey) {
                         case 'comment':
-                            style.innerHTML += '\n/* ' + value + ' */';
+                            style.innerHTML += '\n/* ' + value.replace(/[^\S\r\n]+/g, ' ').replace(/\n/g, "\n   ").trim() + ' */';
                             break;
                         case 'parent':
-                            style.innerHTML += prefix + id + ' {' + value + '}'; 
-                            break;
-                        case "content":
-                            let needlf = false;
-                            Object.entries(value).forEach(([type, content]) => {
-                                if (needlf) {
-                                    style.innerHTML += '\n';
-                                    needlf = false;
-                                }
-                                switch(type) {
-                                    case 'parent':
-                                        style.innerHTML += prefix + id + 'content {' + content + '}'; 
-                                        needlf = true; 
-                                        break;
-                                }
-                            });
+                            style.innerHTML += prefix + id + ' {\n    ' + value.replace(/[^\S\r\n]+/g, ' ').replace(/\n/g, "\n   ").trim() + '\n}'; 
                             break;
                         default:
-                            style.innerHTML += prefix + id + '' + subKey + ' {' + value + '}'; 
+                            style.innerHTML += prefix + id + '' + subKey + ' {\n    ' + value.replace(/[^\S\r\n]+/g, ' ').replace(/\n/g, "\n   ").trim() + '\n}'; 
                             break;
                     }
                     style.innerHTML += "\n";
                 });
-                document.body.appendChild(style);
             } else if (typeof obj[key] === 'object' && obj[key] !== null) {
                 // Recurse deeper into the object
                 init_Css(obj[key], style);
@@ -328,13 +319,28 @@ function wrapper(plugin_info) {
         if (addstyle) {
             style.innerHTML += `/*\n** End CSS for ` + self.title + `\n*/\n`;
             document.body.appendChild(style);
-//            console.info(self.title, style);
+            debugLog('initCss', self.title, style);
         }
     };
 
-//
-// Type of OS/Browser
-//    
+/*    
+** Auxiliary Functions
+*/
+    function debugLog(debugType, ...args) {
+        return debugOutput(debugType, 'log', ...args)
+    }
+
+    function debugOutput(debugType, consoleType, ...args) {
+        if (self.debugTypes.enabled) {
+            if ((self.debugTypes[debugType])||(debugType === 'always')) {
+                console[consoleType]?.(...args);
+            }
+        }
+    }
+
+/*
+** Type of OS/Browser
+*/    
     function isMobile() {
         return (typeof android !== "undefined" && !!android);
     }
@@ -758,6 +764,9 @@ function wrapper(plugin_info) {
             self.pluginloaded = true;
         }
 
+        // Debug Output
+        debugLog('settings', self.title, self.settings);
+    
         localStorage_Init();
         localStorage_loadSettings();
 
