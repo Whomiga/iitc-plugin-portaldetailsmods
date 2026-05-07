@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        0.25.0
+// @version        0.27.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,7 +21,7 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '0.25.0.20260501.143500';
+    self.version = '0.27.0.20260506.233600';
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
@@ -36,7 +36,7 @@ function wrapper(plugin_info) {
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260501.143500";
+    plugin_info.dateTimeVersion = "20260506.233600";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
@@ -328,16 +328,39 @@ function wrapper(plugin_info) {
         }
     };
 
-/*    
-** Auxiliary Functions
+/*
+** Debug and Output Functions
 */
+    // Output Functions, Always Output To Console
+    function outputInfo(...args) {
+        return debugOutput('force', 'info', ...args);
+    }
+
+    function outputLog(...args) {
+        return debugOutput('force', 'log', ...args);
+    }
+
+    function outputError(...args) {
+        return debugOutput('force', 'error', ...args);
+    }
+
+    // Debug Functions, Controlled By Debug Types
+    function debugInfo(debugType, ...args) {
+        return debugOutput(debugType, 'info', ...args)
+    }
+
     function debugLog(debugType, ...args) {
         return debugOutput(debugType, 'log', ...args)
     }
 
+    function debugError(debugType, ...args) {
+        return debugOutput(debugType, 'error', ...args);
+    }
+
+    // Used By Both Output And Debug Functions
     function debugOutput(debugType, consoleType, ...args) {
-        if (self.debugTypes.enabled) {
-            if ((self.debugTypes[debugType])||(debugType === 'always')) {
+        if ((self.debugTypes.enabled) || (debugType == 'force')) {
+            if ((self.debugTypes[debugType])||(debugType === 'force')||(debugType === 'always')) {
                 console[consoleType]?.(...args);
             }
         }
@@ -730,7 +753,7 @@ function wrapper(plugin_info) {
         if ('settings' in localData && localData.settings instanceof Object) {
             if (localData.settings.imageMode) {
                 // Update for version 0.20.0
-                console.log(self.title + " - Updated settings for 0.20.0");
+                outputLog(self.title + " - Updated settings for 0.20.0");
                 let tempsettings = { elementData: { ...localData.settings } };
                 // Deep Merge Of Fixed Settings
                 $.extend(true, self.settings, tempsettings);
@@ -763,7 +786,7 @@ function wrapper(plugin_info) {
 //
 	self.setup = function() {
         if ('pluginloaded' in self) {
-            console.log('IITC plugin already loaded: ' + self.title + ' version ' + self.version);
+            outputLog('IITC plugin already loaded: ' + self.title + ' version ' + self.version);
             return;
         } 
         else {
@@ -795,7 +818,7 @@ function wrapper(plugin_info) {
         //
         init_Css(self.interfaceData);
 
-        console.log('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
+        outputLog('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
     };
 
     var setup = function() {
