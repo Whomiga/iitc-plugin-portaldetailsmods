@@ -555,20 +555,22 @@ function wrapper(plugin_info) {
         let container = main.createContents();
 
         // Create and open the dialog
+        let position = dialog_getPosition(dialog_id);
         dialog = window.dialog({
 			html: container,
             title: main.title,
             id: dialog_id,
             dialogClass: 'ui-dialog-' + self.prefix + main.key,
             resizable: true,
-            position: {
-                my: 'auto',
-                at: 'auto',
-                of: window
+            position: position ? position : { 
+			    my: "auto", 
+		   	    at: "auto", 
+		        of: window
             },
             resizeStop: function(event, ui) {
                 // Keeping height as auto on this one
-                $(this).dialog('option', {height:'auto', position: {my: 'auto',at: 'auto',of: window}});
+                dialog_addPosition(id, dialog.dialog("option", "position"));
+                $(this).dialog('option', {height:'auto'});
                 const width = $(this).parent().innerWidth();
                 self.settings.dialogWidths[main.dialog] = width;
                 localStorage_Save();
@@ -576,6 +578,7 @@ function wrapper(plugin_info) {
             width: self.settings.dialogWidths[main.dialog],
             height: 'auto',
       	    closeCallback: function () {
+                dialog_addPosition(dialog_id, $(this).dialog("option", "position"));
                 dialog_removeDialog(dialog_id);
 	        }
         }).dialog('option', 'buttons', { ...main.buttons});
@@ -694,10 +697,11 @@ function wrapper(plugin_info) {
 */
     function dialog_WindowResize() {
         dialog_DialogList.forEach(el => {
-            el.dialog.dialog('option', 'position', {
-                my: 'auto',
-                at: 'auto',
-                of: window
+            let position = dialog_getPosition(el.id);
+            el.dialog.dialog('option', 'position', position ? position : { 
+			    my: "auto", 
+		   	    at: "auto", 
+		        of: window
             });
             if (el.id === self.prefix + self.interfaceTabs.main.key) {
                 el.dialog.dialog('option', 'width', self.settings.dialogWidths[self.interfaceTabs.main.dialog]);
@@ -739,6 +743,31 @@ function wrapper(plugin_info) {
 //
     function dialog_handleOKButton() {
         $(this).dialog('close');
+    }
+
+/*
+** List of Dialog Positions
+*/
+    let dialog_Positions = [];
+    function dialog_addPosition(id, position) {
+        let index = dialog_Positions.findIndex(item => item.id === id);
+        if (index > -1) {
+            dialog_Positions[index].position = position;
+        }
+        else {
+            dialog_Positions.push( {
+                id: id,
+                position: position
+            })
+        }
+    }
+
+    function dialog_getPosition(id) {
+        let position = undefined;
+        let index = dialog_Positions.findIndex(item => item.id === id);
+        if (index > -1)
+            position = dialog_Positions[index].position;
+        return position;
     }
 
 //
