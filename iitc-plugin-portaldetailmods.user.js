@@ -127,6 +127,27 @@ function wrapper(plugin_info) {
             title: 'Shows Mod Pictures on Portal Detail',
             text: self.title,
         },
+        // Portal Details Info
+        portaldetails: {
+            mods: {
+                id: 'modimage',
+                // CSS Information
+                css: {
+                    comment: 'Portal Details',
+                    id_pre_id: 'pre_id',
+                    parent_1: `
+                        display: inline-block !important`,
+                    ' img': `
+                        width: auto;
+                        height: 64px;`
+                },
+                // Callback Function
+                handler: mods_PortalDetails,
+                owner: mods_PortalDetailsOwner
+            },
+            // Callback Function
+            handler: update_PortalDetails
+        },
         // Main Dialog Info
         main: {
             title: self.title,
@@ -184,27 +205,6 @@ function wrapper(plugin_info) {
             // Callback Function
             createContents: main_createContents,
             showDialog:     main_showDialog
-        },
-        // Portal Details Info
-        portaldetails: {
-            mods: {
-                id: 'modimage',
-                // CSS Information
-                css: {
-                    comment: 'Portal Details',
-                    id_pre_id: 'pre_id',
-                    parent_1: `
-                        display: inline-block !important`,
-                    ' img': `
-                        width: auto;
-                        height: 64px;`
-                },
-                // Callback Function
-                handler: mods_PortalDetails,
-                owner: mods_PortalDetailsOwner
-            },
-            // Callback Function
-            handler: update_PortalDetails
         }
    });   
 
