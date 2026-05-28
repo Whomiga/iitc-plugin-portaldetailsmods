@@ -25,7 +25,7 @@ function wrapper(plugin_info) {
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
-   // Debug Output
+   // Debug output
     self.debugTypes = Object.freeze({
         enabled:  false,
         lists:    true,
@@ -45,36 +45,37 @@ function wrapper(plugin_info) {
     self.namespace = 'window.plugin.' + self.id + '.';
     self.pluginname = 'plugin-' + self.id;
 
-/*
-** Assorted Constants
-*/
+/**********************/
+/* Assorted Constants */
+/**********************/
     const common_DefaultID = 'default';
 
-//
-// Interface Colors
-//
+/********************/
+/* Interface Colors */
+/********************/
+    // Tangerine Yellow
     const default_Color = '#ffce00';
+    const default_Border = '#ffeb97';
     self.interfaceColors = Object.freeze({
         Main:     default_Color,
         Label:    '#ffffff',
         Author:   '#ffffff',
         Text:     '#ffffff',
-        Border:   '#ffffff',
         Gadget:   '#ffffff',
-        Header:   default_Color,
+        Border:   default_Border,
         BackGrnd: 'rgba(8, 60, 78, 0.9)',
     });
 
-/*
-** Interface Widths
-*/
+/********************/
+/* Interface Widths */
+/********************/
     self.interfaceWidths = Object.freeze({
         main: 500,
     });
 
-/*
-** Interface CSS Values
-*/
+/************************/
+/* Interface CSS Values */
+/************************/
     self.interfaceCss = Object.freeze({
         // Main Dialog CSS Information
         'main': {
@@ -116,12 +117,17 @@ function wrapper(plugin_info) {
                 font-size: smaller;`,
         }
     });
-//
-// Interface Configuration
-//
+
+/*****************************/
+/* Interface - Config Values */
+/*****************************/
     self.interfaceConfig = Object.freeze({
         // Prefix
         prefix: self.prefix,
+/*
+** Assorted Information
+** Retabulated for use via self.interfaceLists.data (self.interfaceData)
+*/
         // Toolbox Info
         toolbox: {
             title: 'Shows Mod Pictures on Portal Detail',
@@ -148,6 +154,10 @@ function wrapper(plugin_info) {
             // Callback Function
             handler: update_PortalDetails
         },
+/*
+** Dialog & Tab Information
+** Retabulated for use via self.interfaceLists.tabs (self.interfaceTabs)
+*/
         // Main Dialog Info
         main: {
             title: self.title,
@@ -211,25 +221,38 @@ function wrapper(plugin_info) {
 /*
 ** Lists created from self.interfaceConfig
 */
-    self.interfaceLists = Object.freeze({
-        ...init_interfaceLists(self.interfaceConfig)
+/***************************************************/
+/* Interface Lists - Created from Interface Config */
+/***************************************************/
+    
+    // Get Interface Tabs and Data
+    const { tabs: interfaceTabs, data: interfaceData } = get_interfaceTabsAndData(self.interfaceConfig);
+
+    // Define Interface Shortcuts for Tabs and Data
+    self.interfaceData =          interfaceData;
+    self.interfacePortalDetails = interfaceData.portaldetails;
+    self.interfaceTabs =          interfaceTabs;
+
+    // Assign all Interface Items to Interface Lists
+    self.interfaceLists = {};
+    Object.assign(self.interfaceLists, { 
+        colors: self.interfaceColors,
+        config: self.interfaceConfig,
+        css:    self.interfaceCss,
+        data:   self.interfaceData,
+        tabs:   self.interfaceTabs,
+        widths: self.interfaceWidths
     });
 
-    self.interfaceTabs = self.interfaceLists.tabs;
-    self.interfaceData = self.interfaceLists.data;
-
-/*
-** Portal Details Data
-*/
-    self.portaldetails = {
-        ...self.interfaceData.portaldetails
-    }
-
-//
-// Settings
-//
+/**********************************************************/
+/* Settings - Structure, Creation and Auxiliary Functions */
+/**********************************************************/
     const KEY_SETTINGS = "plugin-portaldetailmods";
     const SETTINGS_PREFIX = self.prefix + "settings--";
+
+    /*
+    ** Settings Values
+    */
     self.settings = {
         // Version Info
         versionData: {
@@ -245,9 +268,9 @@ function wrapper(plugin_info) {
         },
     };
 
-/*
-** Settings Functions
-*/
+    /*
+    ** Creates Element Data structure For Settings from Interface Config or Other Interface Data
+    */
     function get_elementData(obj) {
         let targetKey = 'elements';
         let results = {};
@@ -265,9 +288,9 @@ function wrapper(plugin_info) {
         return results;
     };
 
-/*
-** Creates Dialog Widths Structure For Settings From Interface Tabs
-*/
+    /*
+    ** Creates Dialog Widths structure for Settings from Interface Tabs
+    */
     function get_dialogWidths(tabList) {
         let results = {};
         Object.entries(tabList).forEach(([key, node]) => {
@@ -285,9 +308,18 @@ function wrapper(plugin_info) {
 /*
 ** Creates Interface Lists From Interface Config
 */
-    function init_interfaceLists(obj = self.interfaceConfig) {
+/************************************/
+/* Interface Tabs and Data          */
+/* Creation and Auxiliary Functions */
+/************************************/
+
+    /* 
+    ** Get Interface Tabs and Data from Interface Config
+    */
+    function get_interfaceTabsAndData(obj) {
         let firstStage = init_tabFirstStage(obj);
         init_tabFinalStage(firstStage.tabs);
+        firstStage.tabs = Object.freeze({ ...firstStage.tabs });
         return firstStage;
     }
 
@@ -308,7 +340,7 @@ function wrapper(plugin_info) {
         })
     }
 
-    function init_tabFirstStage(obj = self.interfaceConfig, objKey, addition = "", path = "", parentRef = null, branchRoot = null) {
+    function init_tabFirstStage(obj, objKey, addition = "", path = "", parentRef = null, branchRoot = null) {
         let origList;
         let dataList;
         let tabList = {};
@@ -366,10 +398,12 @@ function wrapper(plugin_info) {
         return tabList;
     }
 
+/*****************/
+/* CSS Functions */
+/*****************/
+
 /*
-** CSS Functions    
-**
-** Creates and adds a Style Sheet created from Interface Lists to Document Body
+** Create and add a Style Sheet created from Interface Lists to Document Body
 **
 ** Changing of ID to be used  - keys must be unique in CSS
 **  key: id_example - ID = example
@@ -378,10 +412,11 @@ function wrapper(plugin_info) {
 **
 ** Prefix to be included before ID
 **    - defaults to '.' before ID
+**  @ - place "@" before ID
 **  # - place "#" before ID
 **  * - place no character before ID
 **
-** A <style></style> will be created an added with the a value
+** A <style></style> will be created and added with the values
 **    created as below
 **
 ** Value to be inserted after ID
@@ -412,7 +447,13 @@ function wrapper(plugin_info) {
                     subKey = subKey.substring(1);
                 }
                 else {
-                    prefix = '.';
+                    if (subKey[0] == "@") {
+                        prefix = '@';
+                        subKey = subKey.substring(1);
+                    }
+                    else {
+                        prefix = '.';
+                    }
                 }
             }
             // Change/Set id using id_? subKey and value
@@ -486,10 +527,11 @@ function wrapper(plugin_info) {
         }
     };
 
-/*
-** Debug and Output Functions
-*/
-    // Output Functions, Always Output To Console
+/**********************************/
+/* Console Debug/Output Functions */
+/**********************************/
+
+    // Output functions, always Output to Console
     function outputInfo(...args) {
         return debugOutput('force', 'info', ...args);
     }
@@ -498,11 +540,15 @@ function wrapper(plugin_info) {
         return debugOutput('force', 'log', ...args);
     }
 
+    function outputWarn(...args) {
+        return debugOutput('force', 'warn', ...args);
+    }
+
     function outputError(...args) {
         return debugOutput('force', 'error', ...args);
     }
 
-    // Debug Functions, Controlled By Debug Types
+    // Debug functions, controlled by Debug types
     function debugInfo(debugType, ...args) {
         return debugOutput(debugType, 'info', ...args)
     }
@@ -511,11 +557,15 @@ function wrapper(plugin_info) {
         return debugOutput(debugType, 'log', ...args)
     }
 
+    function debugWarn(debugType, ...args) {
+        return debugOutput(debugType, 'warn', ...args)
+    }
+
     function debugError(debugType, ...args) {
         return debugOutput(debugType, 'error', ...args);
     }
 
-    // Used By Both Output And Debug Functions
+    // Used by both Output and Debug functions
     function debugOutput(debugType, consoleType, ...args) {
         if ((self.debugTypes.enabled) || (debugType == 'force')) {
             if ((self.debugTypes[debugType])||(debugType === 'force')||(debugType === 'always')) {
@@ -524,9 +574,9 @@ function wrapper(plugin_info) {
         }
     }
 
-/*
-** Type of OS/Browser
-*/    
+/**********************/
+/* Type of OS/Browser */
+/**********************/    
     function isMobile() {
         return (typeof android !== "undefined" && !!android);
     }
@@ -539,12 +589,12 @@ function wrapper(plugin_info) {
         return (/Firefox/i.test(navigator.userAgent));
     }
 
-// 
-// Main Dialog
-//
+/**********************************************/
+/* Main Dialog - Show and Auxiliary Functions */
+/**********************************************/
     function main_showDialog() {
         let main = self.interfaceTabs.main;
-        let dialog_id = self.prefix + main.key;
+        let dialog_id =  self.prefix + main.key;
         let dialog = dialog_getDialog(dialog_id);
         if (dialog && dialog.dialog('isOpen')) {
             dialog.dialog('close');
@@ -585,9 +635,9 @@ function wrapper(plugin_info) {
         dialog_addDialog(dialog_id, dialog);
     }
 
-/*
-** Main Dialog - Contents
-*/
+    /*
+    ** Main Dialog - Contents
+    */
     function main_createContents() {
         let main = self.interfaceTabs.main;
         let div = document.createElement('div');
@@ -609,9 +659,9 @@ function wrapper(plugin_info) {
         return div;
     }
 
-//
-// Create Sections for Settings
-//    
+    /*
+    ** Create Sections for Settings
+    */    
     function settings_createSections(area, sections) {
         Object.values(sections).forEach((section) => {
             let div = area.appendChild(document.createElement('div'))
@@ -626,9 +676,9 @@ function wrapper(plugin_info) {
         });
     }
 
-//
-// Create Elements for Settings
-//    
+    /*
+    ** Create Elements for Settings
+    */    
     function settings_createElements(tablebody, elements) {
         Object.entries(elements).forEach(([id, element]) => {
             switch(element.type) {
@@ -666,23 +716,23 @@ function wrapper(plugin_info) {
         });
     }
 
-//
-// Settings - Event Handlers
-//
+    /*
+    ** Settings - Event Handlers
+    */
     function settings_handleImageMode(event, element) {
-        let portaldetails = self.portaldetails;
+        let portaldetails = self.interfacePortalDetails;
         if (self.settings.elementData[element.settings] == 'disabled') {
             if (self.id != portaldetails.mods.owner()) {
                 return;
             }
             else {
-                self.portaldetails.mods.handler();
+                self.interfacePortalDetails.mods.handler();
                 portaldetails.mods.owner(self.id, true);
             }
         }
         else {
             if (self.id == portaldetails.mods.owner(self.id)) {
-                self.portaldetails.mods.handler();
+                self.interfacePortalDetails.mods.handler();
             }
             else {
                 select = document.getElementById(SETTINGS_PREFIX + "imagemode")
@@ -692,9 +742,13 @@ function wrapper(plugin_info) {
         }
     }
 
-/*
-** Handle Dialogs When Windows Are Resized/Repositioned
-*/
+/*******************************************/
+/* Dialog Handlers and Auxiliary Functions */
+/*******************************************/
+
+    /*
+    ** Handle Dialogs When Windows Are Resized/Repositioned
+    */
     function dialog_WindowResize() {
         dialog_DialogList.forEach(el => {
             let position = dialog_getPosition(el.id);
@@ -713,9 +767,9 @@ function wrapper(plugin_info) {
         });
     }
 
-//
-//  List of Open Dialog Windows
-//
+    /*
+    ** List of Open Dialog Windows
+    */
     let dialog_DialogList = [];
     function dialog_addDialog(id, dialog) {
         dialog_DialogList.push( {
@@ -738,16 +792,16 @@ function wrapper(plugin_info) {
             dialog_DialogList.splice(index,1);
     }
 
-//
-// Default Handler for Dialog OK Button
-//
+    /*
+    ** Default Handler for Dialog OK Button
+    */
     function dialog_handleOKButton() {
         $(this).dialog('close');
     }
 
-/*
-** List of Dialog Positions
-*/
+    /*
+    ** List of Dialog Positions
+    */
     let dialog_Positions = [];
     function dialog_addPosition(id, position) {
         let index = dialog_Positions.findIndex(item => item.id === id);
@@ -770,11 +824,15 @@ function wrapper(plugin_info) {
         return position;
     }
 
-//
-//  Place Mods Graphics in Portal Details box
-//        
+/***********************************/
+/* PortalDetails Related Functions */
+/***********************************/
+
+    /*
+    ** Place Mods Graphics in Portal Details box
+    */        
     function update_PortalDetails(p) {
-        let portaldetails = self.portaldetails;
+        let portaldetails = self.interfacePortalDetails;
         portaldetails.mods.handler();
 	}
 
@@ -814,7 +872,7 @@ function wrapper(plugin_info) {
 
     // Update/Change Mods on Portal Details
     function mods_PortalDetails() {
-        let portaldetails = self.portaldetails;
+        let portaldetails = self.interfacePortalDetails;
         let setting = self.settings.elementData.imageMode;
         mods = document.querySelectorAll('.mods span');
         if (mods) {
@@ -858,9 +916,9 @@ function wrapper(plugin_info) {
         }
     }
 
-//
-// Mods Image Definitions
-//
+    /*
+    ** Mods Image Definitions
+    */
     function mods_getImageByKey(key, imageMode) {
         const prefix = "data:image/webp;base64,";
 
@@ -949,9 +1007,9 @@ function wrapper(plugin_info) {
         return result;
     }
 
-//
-// LocalStorage Related Functions
-//    
+/**********************************/
+/* LocalStorage Related Functions */
+/**********************************/
     function localStorage_Init() {
         if (!localStorage[KEY_SETTINGS]) {
             localStorage[KEY_SETTINGS] = JSON.stringify({
@@ -959,7 +1017,9 @@ function wrapper(plugin_info) {
             });
         }
     }
-
+/*
+** Load Related Functions
+*/
     function localStorage_loadSettings() {
         let localData = localStorage[KEY_SETTINGS];
         if (!localData || localData == "") return;
@@ -983,9 +1043,9 @@ function wrapper(plugin_info) {
         }
     };
 
-//
-// Save Related Functions
-//
+/*
+** Save Related Functions
+*/
     function localStorage_Save() {
 		const ls = {};
 		self.settings = self.settings; // Why?
@@ -996,9 +1056,9 @@ function wrapper(plugin_info) {
 		localStorage[KEY_SETTINGS] = JSON.stringify(ls);
 	}
 
-//
-// Main Setup Function
-//
+/***********************/
+/* Main Setup Function */
+/***********************/
 	self.setup = function() {
         if ('pluginloaded' in self) {
             outputLog('IITC plugin already loaded: ' + self.title + ' version ' + self.version);
@@ -1009,29 +1069,30 @@ function wrapper(plugin_info) {
         }
 
         // Debug Output
-        debugLog('lists', self.title, self.interfaceLists);
+        debugLog('lists',    self.title, self.interfaceLists);
         debugLog('settings', self.title, self.settings);
     
+        // Init Local Storage and Load Settings
         localStorage_Init();
         localStorage_loadSettings();
 
         // Check/Take Mods Ownership Or Disable
         if (self.settings.elementData.imageMode != 'disabled') {
-            if (self.id != self.portaldetails.mods.owner(self.id)) {
+            if (self.id != self.interfacePortalDetails.mods.owner(self.id)) {
                 self.settings.elementData.imageMode = 'disabled';
             }
         }
 
+        // Setup for Use of Toolbox
       	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
        		.text(self.interfaceData.toolbox.text)
        		.click(self.interfaceTabs.main.showDialog)
        		.appendTo($('#toolbox'));
 
-        window.addHook('portalDetailsUpdated', self.portaldetails.handler);
+        window.addHook('portalDetailsUpdated', self.interfacePortalDetails.handler);
 
-        // 
         // init_Css()
-        //
+        // Init CSS and Add to Document Body
         init_Css(self.interfaceLists);
 
         //
@@ -1046,14 +1107,18 @@ function wrapper(plugin_info) {
         (window.iitcLoaded?self.setup():window.addHook('iitcLoaded', self.setup));
     };
 
-    setup.info = plugin_info; //add the script info data to the function as a property
+    // Add the Script Info Data to the function as a Property
+    setup.info = plugin_info;
     if(!window.bootPlugins) window.bootPlugins = [];
     window.bootPlugins.push(setup);
-    // if IITC has already booted, immediately run the 'setup' function
-    if(window.iitcLoaded && typeof setup === 'function') setup();
-} // wrapper end
 
-// inject code into site context
+    // If IITC has already booted, immediately run The 'setup' function
+    if(window.iitcLoaded && typeof setup === 'function') setup();
+} // End of Wrapper
+
+/*********************************/
+/* Inject Code Into Site Context */
+/*********************************/
 var script = document.createElement('script');
 var info = {};
 if (typeof GM_info !== 'undefined' && GM_info && GM_info.script) info.script = { version: GM_info.script.version, name: GM_info.script.name, description: GM_info.script.description };
