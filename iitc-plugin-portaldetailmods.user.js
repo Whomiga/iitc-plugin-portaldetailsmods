@@ -62,6 +62,7 @@ function wrapper(plugin_info) {
         Author:   '#ffffff',
         Text:     '#ffffff',
         Gadget:   '#ffffff',
+        Header:   '#ffce00',
         Border:   default_Border,
         BackGrnd: 'rgba(8, 60, 78, 0.9)',
     });
