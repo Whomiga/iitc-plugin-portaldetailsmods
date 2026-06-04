@@ -167,6 +167,7 @@ function wrapper(plugin_info) {
                         width: auto;
                         height: 64px;`
                 },
+                property: '--portaldetails-mods-owner',
                 // Callback Function
                 handler: mods_PortalDetails,
                 owner: mods_PortalDetailsOwner
@@ -857,12 +858,12 @@ function wrapper(plugin_info) {
 
     /* Store Current Owner of Portal Mods */
     function mods_PortalDetailsOwner(newowner = null, clear = false) {
-        let modsowner = window.getComputedStyle(document.documentElement).getPropertyValue('--portal-mods-owner').trim();
+        let modsowner = window.getComputedStyle(document.documentElement).getPropertyValue(self.interfacePortalDetails.mods.property).trim();
         let owner = "";
         if (newowner) {
             if (clear) {
                 if (modsowner === newowner) {
-                    document.documentElement.style.removeProperty('--portal-mods-owner');
+                    document.documentElement.style.removeProperty(self.interfacePortalDetails.mods.property);
                     owner = newowner;
                 }
                 else {
@@ -872,7 +873,7 @@ function wrapper(plugin_info) {
             }
             else {
                 if (modsowner === "") {
-                    document.documentElement.style.setProperty('--portal-mods-owner', `${newowner}`);
+                    document.documentElement.style.setProperty(self.interfacePortalDetails.mods.property, `${newowner}`);
                     owner = newowner;
                 }
                 else {
