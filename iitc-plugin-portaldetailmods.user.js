@@ -857,35 +857,31 @@ function wrapper(plugin_info) {
 	}
 
     /* Store Current Owner of Portal Mods */
-    function mods_PortalDetailsOwner(newowner = null, clear = false) {
-        let modsowner = window.getComputedStyle(document.documentElement).getPropertyValue(self.interfacePortalDetails.mods.property).trim();
-        let owner = "";
-        if (newowner) {
-            if (clear) {
-                if (modsowner === newowner) {
-                    document.documentElement.style.removeProperty(self.interfacePortalDetails.mods.property);
-                    owner = newowner;
-                }
-                else {
-                    owner = modsowner;
-                }
-                return owner;
+    function mods_PortalDetailsOwner(newOwner = null, clear = false) {
+        const rootStyle = document.documentElement.style;
+        const propName = self.interfacePortalDetails.mods.property;
+        const modsOwner = window.getComputedStyle(document.documentElement).getPropertyValue(propName).trim();
+
+        // Case 1: Clear the property if it matches newowner
+        if (newOwner && clear) {
+            if (modsOwner === newOwner) {
+                rootStyle.removeProperty(propName);
             }
-            else {
-                if (modsowner === "") {
-                    document.documentElement.style.setProperty(self.interfacePortalDetails.mods.property, `${newowner}`);
-                    owner = newowner;
-                }
-                else {
-                    owner = modsowner;
-                }
+            return modsOwner;
+        }
+
+        // Case 2: Set the property if it is currently empty
+        if (newOwner && !clear) {
+            if (modsOwner === "") {
+                rootStyle.setProperty(propName, `${newOwner}`);
+                return newOwner;
             }
+            return modsOwner;
         }
-        else {
-            owner = modsowner;
-        }
-    return owner;
-	}
+
+        // Case 3: No newowner provided, just fetch current
+        return modsOwner;
+    }
 
     // Update/Change Mods on Portal Details
     function mods_PortalDetails() {
