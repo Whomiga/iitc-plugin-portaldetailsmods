@@ -857,36 +857,33 @@ function wrapper(plugin_info) {
 
     /* Store Current Owner of Portal Mods */
     function mods_PortalDetailsOwner(newowner = null, clear = false) {
-        let playername = document.querySelectorAll('.playername');
-        let owner = null;
-        if (playername) {
-            el = Array.from(playername)[0];
-            if (newowner) {
-                if (clear) {
-                    if (el.dataset.modsowner == newowner) {
-                        delete el.dataset.modsowner;
-                        owner = newowner;
-                    }
-                    else {
-                        owner = el.dataset.modsowner;
-                    }
-                    return owner;
+        let modsowner = window.getComputedStyle(document.documentElement).getPropertyValue('--portal-mods-owner').trim();
+        let owner = "";
+        if (newowner) {
+            if (clear) {
+                if (modsowner === newowner) {
+                    document.documentElement.style.removeProperty('--portal-mods-owner');
+                    owner = newowner;
                 }
                 else {
-                    if (el.dataset.modsowner == undefined) {
-                        el.dataset.modsowner = newowner;
-                        owner = newowner;
-                    }
-                    else {
-                        owner = el.dataset.modsowner;
-                    }
+                    owner = modsowner;
                 }
+                return owner;
             }
             else {
-                owner = el.dataset.modsowner;
+                if (modsowner === "") {
+                    document.documentElement.style.setProperty('--portal-mods-owner', `${newowner}`);
+                    owner = newowner;
+                }
+                else {
+                    owner = modsowner;
+                }
             }
         }
-        return owner
+        else {
+            owner = modsowner;
+        }
+    return owner;
 	}
 
     // Update/Change Mods on Portal Details
