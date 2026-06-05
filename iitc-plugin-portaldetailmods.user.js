@@ -740,25 +740,26 @@ function wrapper(plugin_info) {
     ** Settings - Event Handlers
     */
     function settings_handleImageMode(event, element) {
-        let portaldetails = self.interfacePortalDetails;
-        if (self.settings.elementData[element.settings] == 'disabled') {
-            if (self.id != portaldetails.mods.owner()) {
+        const portalDetails = self.interfacePortalDetails;
+        const portalSettings = self.settings.elementData[element.settings];
+        if (portalSettings === 'disabled') {
+            if (self.id !== portalDetails.mods.owner()) {
                 return;
             }
-            else {
-                self.interfacePortalDetails.mods.handler();
-                portaldetails.mods.owner(self.id, true);
-            }
+            self.interfacePortalDetails.mods.handler();
+            portalDetails.mods.owner(self.id, true);
         }
         else {
-            if (self.id == portaldetails.mods.owner(self.id)) {
+            if (self.id === portalDetails.mods.owner(self.id)) {
                 self.interfacePortalDetails.mods.handler();
             }
             else {
-                select = document.getElementById(SETTINGS_PREFIX + "imagemode")
-                select.value = 'disabled';
-                select.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+                const selectElement = document.getElementById(SETTINGS_PREFIX + "imagemode")
+                if (selectElement) {
+                    selectElement.value = 'disabled';
+                    selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+           }
         }
     }
 
