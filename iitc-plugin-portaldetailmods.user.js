@@ -132,6 +132,7 @@ function wrapper(plugin_info) {
 ** Assorted Information
 ** Retabulated for use via self.interfaceLists.data (self.interfaceData)
 */
+        // CSS Variables
         variables: {
             css: {
                 comment: 'Global CSS Variables',
@@ -239,9 +240,6 @@ function wrapper(plugin_info) {
         }
    });   
 
-/*
-** Lists created from self.interfaceConfig
-*/
 /***************************************************/
 /* Interface Lists - Created from Interface Config */
 /***************************************************/
@@ -325,9 +323,6 @@ function wrapper(plugin_info) {
         return results;
     }
 
-/*
-** Creates Interface Tablist From Interface Data
-*/
 /************************************/
 /* Interface Tabs and Data          */
 /* Creation and Auxiliary Functions */
@@ -1105,7 +1100,6 @@ function wrapper(plugin_info) {
 
         window.addHook('portalDetailsUpdated', self.interfacePortalDetails.handler);
 
-        // init_Css()
         // Init CSS and Add to Document Body
         init_Css(self.interfaceLists);
 
