@@ -21,7 +21,7 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '1.0.0.20260609.210700';
+    self.version = '1.2.0.20260614.090800';
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
@@ -37,7 +37,7 @@ function wrapper(plugin_info) {
     plugin_info.buildName = "PortalDetailMods";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "20260609.210700";
+    plugin_info.dateTimeVersion = "20260614.090800";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalDetailMods";
