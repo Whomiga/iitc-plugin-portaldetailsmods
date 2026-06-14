@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.0.0
+// @version        1.2.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -55,7 +55,6 @@ function wrapper(plugin_info) {
 /********************/
     // Tangerine Yellow
     const default_Color = '#ffce00';
-    const default_Border = '#ffeb97';
     self.interfaceColors = Object.freeze({
         Main:     default_Color,
         Label:    '#ffffff',
@@ -63,8 +62,6 @@ function wrapper(plugin_info) {
         Text:     '#ffffff',
         Gadget:   '#ffffff',
         Header:   '#ffce00',
-        Border:   default_Border,
-        BackGrnd: 'rgba(8, 60, 78, 0.9)',
     });
 
 /********************/
@@ -86,6 +83,7 @@ function wrapper(plugin_info) {
                 overflow-x: hidden !important;`,
             'id_ui_dialog': 'ui-dialog-' + self.prefix + 'main',
             'parent_B': `
+                background-color: var(--${self.prefix}BkGrnd);
                 max-width: calc(100vw - 2px);`,
             ' .ui-dialog-content': `
                 color: inherit;
@@ -144,7 +142,6 @@ function wrapper(plugin_info) {
                     --${self.prefix}Label:              ${self.interfaceColors.Label};
                     --${self.prefix}Author:             ${self.interfaceColors.Author};
                     --${self.prefix}Gadget:             ${self.interfaceColors.Gadget};
-                    --${self.prefix}Border:             1px solid ${self.interfaceColors.Border};
                     /* Header Colors */
                     --${self.prefix}Header:             ${self.interfaceColors.Header};`
             }
@@ -192,14 +189,6 @@ function wrapper(plugin_info) {
             css: {
                 comment: 'Main Dialog',
                 ...self.interfaceCss.main
-            },
-            colors: {
-                Main:     self.interfaceColors.Main,
-                Label:    self.interfaceColors.Label,
-                Border:   self.interfaceColors.Border,
-                Gadget:   self.interfaceColors.Gadget,
-                Header:   self.interfaceColors.Header,
-                BackGrnd: self.interfaceColors.BackGrnd,
             },
             // Buttons Used In Dialog
             buttons: {
@@ -508,6 +497,8 @@ function wrapper(plugin_info) {
             style = document.createElement('style');
             style.innerHTML += `\n/*\n** Begin CSS for ` + self.title + `\n*/\n`;
             addstyle = true;
+            // Add Theme Css Variables to Beginning of Styles
+            get_themeCss(style);
         }
         if (subtab) {
             Object.entries(lists).forEach(([key, node]) => {
@@ -540,6 +531,30 @@ function wrapper(plugin_info) {
             document.body.appendChild(style);
             debugLog('initCss', self.title, style);
         }
+    };
+
+    function get_themeCss(style) {
+        const themeElement = document.querySelector('.ui-dialog') || document.createElement('div');
+        if (!document.querySelector('.ui-dialog')) {
+            themeElement.className = 'ui-dialog ui-widget ui-widget-content';
+            document.body.appendChild(themeElement);
+        }
+        // Get Theme Styles
+        const themeStyles = window.getComputedStyle(themeElement);
+        const themeBorder = themeStyles.border || themeStyles.borderTop;
+        const themeBkGrnd = themeStyles.backgroundColor;
+        if (themeElement.parentNode === document.body) {
+            document.body.removeChild(themeElement);
+        }
+        parse_Css( {
+            css: {
+                comment: 'Theme CSS Variables',
+                id_root: ':root',
+                '*parent_1': `
+                    --${self.prefix}Border: ${themeBorder};
+                    --${self.prefix}BkGrnd: ${themeBkGrnd};`
+                }
+            }, style);
     };
 
 /**********************************/
