@@ -83,7 +83,7 @@ function wrapper(plugin_info) {
                 overflow-x: hidden !important;`,
             'id_ui_dialog': 'ui-dialog-' + self.prefix + 'main',
             'parent_B': `
-                background-color: var(--${self.prefix}BkGrnd);
+                background-color: var(--${self.prefix}window-BkGrnd);
                 max-width: calc(100vw - 2px);`,
             ' .ui-dialog-content': `
                 color: inherit;
@@ -99,13 +99,13 @@ function wrapper(plugin_info) {
                 color: var(--${self.prefix}Label) !important;`,
             '-innersettings': `
                 padding: 8px 8px;
-                border: var(--${self.prefix}Border);
+                border: var(--${self.prefix}window-Border);
                 background-color: inherit !important;
                 color: inherit !important;`,
             'id_pre_main': 'pre_main',
             'parent_C': `
                 padding: 4px 4px;
-                border: var(--${self.prefix}Border);
+                border: var(--${self.prefix}window-Border);
                 background-color: inherit !important;
                 color: inherit !important;
                 display: flex;
@@ -236,9 +236,13 @@ function wrapper(plugin_info) {
     // Get Interface Tabs and Data
     const { tabs: interfaceTabs, data: interfaceData } = get_interfaceTabsAndData(self.interfaceConfig);
 
+    // Theme Data For Later
+    interfaceData.theme = {};
+
     // Define Interface Shortcuts for Tabs and Data
     self.interfaceData =          interfaceData;
     self.interfacePortalDetails = interfaceData.portaldetails;
+    self.interfaceTheme =         interfaceData.theme;
     self.interfaceTabs =          interfaceTabs;
 
     // Assign all Interface Items to Interface Lists
@@ -497,8 +501,6 @@ function wrapper(plugin_info) {
             style = document.createElement('style');
             style.innerHTML += `\n/*\n** Begin CSS for ` + self.title + `\n*/\n`;
             addstyle = true;
-            // Add Theme Css Variables to Beginning of Styles
-            get_themeCss(style);
         }
         if (subtab) {
             Object.entries(lists).forEach(([key, node]) => {
@@ -533,29 +535,47 @@ function wrapper(plugin_info) {
         }
     };
 
-    function get_themeCss(style) {
-        const themeElement = document.querySelector('.ui-dialog') || document.createElement('div');
-        if (!document.querySelector('.ui-dialog')) {
-            themeElement.className = 'ui-dialog ui-widget ui-widget-content';
-            document.body.appendChild(themeElement);
-        }
-        // Get Theme Styles
-        const themeStyles = window.getComputedStyle(themeElement);
-        const themeBorder = themeStyles.border || themeStyles.borderTop;
-        const themeBkGrnd = themeStyles.backgroundColor;
-        if (themeElement.parentNode === document.body) {
-            document.body.removeChild(themeElement);
-        }
-        parse_Css( {
+    function get_dialogTheme() {
+        var dummy = window.dialog({
+            title: "Theme Test",
+            html: "<div class='theme-body-test'>Body</div>",
+            buttons: { "OK": function() {} }
+        });
+  
+        var wrapper = dummy.parent();
+        var titlebar = wrapper.find('.ui-dialog-titlebar');
+        var content = wrapper.find('.ui-dialog-content');
+        var buttonpane = wrapper.find('.ui-dialog-buttonpane');
+        var button = buttonpane.find('button');
+        var theme = {
+            key: 'theme',
             css: {
-                comment: 'Theme CSS Variables',
+                comment: 'Theme CSS Values',
                 id_root: ':root',
                 '*parent_1': `
-                    --${self.prefix}Border: ${themeBorder};
-                    --${self.prefix}BkGrnd: ${themeBkGrnd};`
-                }
-            }, style);
-    };
+                    /* Outer window border and background */
+                    --${self.prefix}window-BkGrnd: ${wrapper.css('background-color')};
+                    --${self.prefix}window-Border: ${wrapper.css('border')};
+                    --${self.prefix}window-BorderRadius: ${wrapper.css('border-radius')};
+                    /* Top header bar */
+                    --${self.prefix}header-BkGrnd: ${titlebar.css('background-image') !== 'none' ? titlebar.css('background-image') : titlebar.css('background-color')};
+                    --${self.prefix}header-TextColor: ${titlebar.find('.ui-dialog-title').css('color')};
+                    --${self.prefix}header-FontSize: ${titlebar.find('.ui-dialog-title').css('font-size')};
+                    /* Main inner text area */
+                    --${self.prefix}body-BkGrnd: ${content.css('background-color')};
+                    --${self.prefix}body-TextColor: ${content.css('color')};
+                    --${self.prefix}body-FontFamily: ${content.css('font-family')};
+                    /* Bottom action bar and buttons */
+                    --${self.prefix}footer-BkGrnd: ${buttonpane.css('background-color')};
+                    --${self.prefix}footer-ButtonBkGrnd: ${button.css('background-color')};
+                    --${self.prefix}footer-ButtonTextColor: ${button.css('color')};
+                    --${self.prefix}footer-ButtonBorder: ${button.css('border-top-color')};`
+            },
+        };
+        dummy.dialog('close').remove();
+        return theme;
+    }
+        
 
 /**********************************/
 /* Console Debug/Output Functions */
@@ -1114,6 +1134,11 @@ function wrapper(plugin_info) {
        		.appendTo($('#toolbox'));
 
         window.addHook('portalDetailsUpdated', self.interfacePortalDetails.handler);
+
+        // Get Dialog Theme Values
+        self.interfaceData.theme = Object.freeze({
+            ...get_dialogTheme()
+        });
 
         // Init CSS and Add to Document Body
         init_Css(self.interfaceLists);
