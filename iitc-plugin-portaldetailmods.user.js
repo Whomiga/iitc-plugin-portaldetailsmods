@@ -236,13 +236,9 @@ function wrapper(plugin_info) {
     // Get Interface Tabs and Data
     const { tabs: interfaceTabs, data: interfaceData } = get_interfaceTabsAndData(self.interfaceConfig);
 
-    // Theme Data For Later
-    interfaceData.theme = {};
-
     // Define Interface Shortcuts for Tabs and Data
     self.interfaceData =          interfaceData;
     self.interfacePortalDetails = interfaceData.portaldetails;
-    self.interfaceTheme =         interfaceData.theme;
     self.interfaceTabs =          interfaceTabs;
 
     // Assign all Interface Items to Interface Lists
@@ -1112,6 +1108,10 @@ function wrapper(plugin_info) {
             self.pluginloaded = true;
         }
 
+        // Add Dialog Theme Values to Interface Lists
+        self.interfaceTheme = Object.freeze(get_dialogTheme());
+        self.interfaceData.theme = self.interfaceTheme;
+
         // Debug Output
         debugLog('lists',    self.title, self.interfaceLists);
         debugLog('settings', self.title, self.settings);
@@ -1134,11 +1134,6 @@ function wrapper(plugin_info) {
        		.appendTo($('#toolbox'));
 
         window.addHook('portalDetailsUpdated', self.interfacePortalDetails.handler);
-
-        // Get Dialog Theme Values
-        self.interfaceData.theme = Object.freeze({
-            ...get_dialogTheme()
-        });
 
         // Init CSS and Add to Document Body
         init_Css(self.interfaceLists);
