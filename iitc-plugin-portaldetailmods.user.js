@@ -93,22 +93,26 @@ function wrapper(plugin_info) {
             }
         };
         dummy.dialog('close').remove();
-        // Main Colors
-        var default_Color =     `var(--${self.prefix}Main)`
-        var default_TextColor = `var(--${self.prefix}Text)`
+
+        // Default Colors
+        var default_MainColor =    `var(--${self.prefix}default_MainColor)`
+        var default_TextColor =    `var(--${self.prefix}default_TextColor)`
+        var default_Backgrnd =     `var(--${self.prefix}default_Backgrnd)`
+        var default_HeaderColor =  `var(--${self.prefix}default_HeaderColor)`
+        var default_BorderColor =  `var(--${self.prefix}default_BorderColor)`
         var main = {
-            // Default Colors
-            Main:               dialog.title.TextColor,
-            Text:               dialog.body.TextColor,
+            // Main Colors
+            Main:               default_MainColor,
+            Text:               default_TextColor,
             Label:              default_TextColor,
-            Author:             default_TextColor,
+            Author:             dialog.body.TextColor,
             Gadget:             '#ffffff',
-            Backgrnd:           dialog.window.BkGrnd,
-            /* Border Definition */
-            Border:             `1px solid var(--${self.prefix}BorderColor)`,
-            BorderColor:        dialog.window.Border,
+            Backgrnd:           default_Backgrnd,
+            // Border Definitions
+            Border:             `1px solid ${default_BorderColor}`,
+            BorderColor:        default_BorderColor,
             // Header Colors
-            Header:             default_Color
+            Header:             default_HeaderColor,
         };
 
         // CSS Values
@@ -116,7 +120,13 @@ function wrapper(plugin_info) {
             comment: 'Global CSS Variables',
             id_root: ':root',
             '*parent_1': `
-                /* Default Colors */
+                /* Default Colors from Dialog */
+                --${self.prefix}default_MainColor:    ${dialog.title.TextColor};
+                --${self.prefix}default_HeaderColor:  ${dialog.title.TextColor};
+                --${self.prefix}default_TextColor:    ${dialog.body.TextColor};
+                --${self.prefix}default_Backgrnd:     ${dialog.window.BkGrnd};
+                --${self.prefix}default_BorderColor:  ${dialog.window.Border};
+                /* Main Colors */
                 --${self.prefix}Main:               ${main.Main};
                 --${self.prefix}Text:               ${main.Text};
                 --${self.prefix}Label:              ${main.Label};
