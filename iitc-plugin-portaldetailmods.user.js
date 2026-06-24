@@ -58,12 +58,14 @@ function wrapper(plugin_info) {
     function get_themeInfo() {
         var dummy = window.dialog({
             title: "Theme Test",
-            html: "<div class='theme-body-test'>Body</div>",
+            html: '<div class="theme-body-test"><a href="#" id="test-link">Body</a></div>',
             buttons: { "OK": function() {} }
         });  
         var wrapper = dummy.parent();
         var titlebar = wrapper.find('.ui-dialog-titlebar');
         var content = wrapper.find('.ui-dialog-content');
+        var link = wrapper.find('#test-link');
+        var hoverlink = link.clone().addClass('ui-state-hover').appendTo(wrapper);
         var buttonpane = wrapper.find('.ui-dialog-buttonpane');
         var button = buttonpane.find('button');
 
@@ -84,6 +86,14 @@ function wrapper(plugin_info) {
                 BkGrnd: content.css('background-color'),
                 TextColor: content.css('color'),
                 FontFamily: content.css('font-family')
+            },
+            link: {
+                TextColor: link.css('color'),
+                TextDecoration: link.css('text-decoration'),
+                HoverTextColor: hoverlink.css('color'),
+                HoverTextDecoration: hoverlink.css('text-decoration'),
+                FontWeight: link.css('font-weight'),
+                FontSize: link.css('font-size')
             },
             button: {
                 BkGrnd: buttonpane.css('background-color'),
@@ -123,6 +133,7 @@ function wrapper(plugin_info) {
                 /* Default Colors from Dialog */
                 --${self.prefix}default_MainColor:    ${dialog.title.TextColor};
                 --${self.prefix}default_HeaderColor:  ${dialog.title.TextColor};
+                --${self.prefix}default_LinkColor:    ${dialog.link.TextColor};
                 --${self.prefix}default_TextColor:    ${dialog.body.TextColor};
                 --${self.prefix}default_Backgrnd:     ${dialog.window.BkGrnd};
                 --${self.prefix}default_BorderColor:  ${dialog.window.Border};
@@ -144,7 +155,7 @@ function wrapper(plugin_info) {
         var themes = {};
         Object.assign(themes, {
             key: 'themes',
-            theme: dialog,
+            dialog: dialog,
             main: main,
             css: css
         });
@@ -246,7 +257,7 @@ function wrapper(plugin_info) {
         },
 /*
 ** Dialog & Tab Information
-** Retabulated for use via self.interfaceLists.tabs (self.interfaceTabs)
+** Retabulated for use via self.interfaceLists.dialogs (self.interfaceDialogs)
 */
         // Main Dialog Info
         main: {
@@ -304,21 +315,21 @@ function wrapper(plugin_info) {
 /* Interface Lists - Created from Interface Config */
 /***************************************************/
     
-    // Get Interface Tabs and Data
-    const { tabs: interfaceTabs, data: interfaceData } = get_interfaceTabsAndData(self.interfaceConfig);
+    // Get Interface Tabs/Dialogs and Data
+    const { tabs: interfaceDialogs, data: interfaceData } = get_interfaceTabsAndData(self.interfaceConfig);
 
     // Define Interface Shortcuts for Tabs and Data
     self.interfaceData =          interfaceData;
     self.interfacePortalDetails = interfaceData.portaldetails;
-    self.interfaceTabs =          interfaceTabs;
+    self.interfaceDialogs =       interfaceDialogs;
 
     // Assign all Interface Items to Interface Lists
     self.interfaceLists = {};
     Object.assign(self.interfaceLists, { 
-        css:    self.interfaceCss,
-        data:   self.interfaceData,
-        tabs:   self.interfaceTabs,
-        widths: self.interfaceWidths
+        css:     self.interfaceCss,
+        data:    self.interfaceData,
+        dialogs: self.interfaceDialogs,
+        widths:  self.interfaceWidths
     });
 
 /**********************************************************/
@@ -341,7 +352,7 @@ function wrapper(plugin_info) {
         },
         // Widths of Dialogs
         dialogWidths: {
-            ...get_dialogWidths(self.interfaceTabs),
+            ...get_dialogWidths(self.interfaceDialogs),
         },
     };
 
@@ -667,7 +678,7 @@ function wrapper(plugin_info) {
 /* Main Dialog - Show and Auxiliary Functions */
 /**********************************************/
     function main_showDialog() {
-        let main = self.interfaceTabs.main;
+        let main = self.interfaceDialogs.main;
         let dialog_id =  self.prefix + main.key;
         let dialog = dialog_getDialog(dialog_id);
         if (dialog && dialog.dialog('isOpen')) {
@@ -713,7 +724,7 @@ function wrapper(plugin_info) {
     ** Main Dialog - Contents
     */
     function main_createContents() {
-        let main = self.interfaceTabs.main;
+        let main = self.interfaceDialogs.main;
         let div = document.createElement('div');
         div.id = self.prefix + main.key;
 
@@ -739,7 +750,7 @@ function wrapper(plugin_info) {
     function settings_createSections(area, sections) {
         Object.values(sections).forEach((section) => {
             let div = area.appendChild(document.createElement('div'))
-            div.className = self.prefix + self.interfaceTabs.main.key + "-innersettings";
+            div.className = self.prefix + self.interfaceDialogs.main.key + "-innersettings";
             var table = div.appendChild(document.createElement('table'));
             table.style.width = '100%';
             var row = table.appendChild(document.createElement('tr'));
@@ -832,8 +843,8 @@ function wrapper(plugin_info) {
 		   	    at: "auto", 
 		        of: window
             });
-            if (el.id === self.prefix + self.interfaceTabs.main.key) {
-                el.dialog.dialog('option', 'width', self.settings.dialogWidths[self.interfaceTabs.main.dialog]);
+            if (el.id === self.prefix + self.interfaceDialogs.main.key) {
+                el.dialog.dialog('option', 'width', self.settings.dialogWidths[self.interfaceDialogs.main.dialog]);
                 el.dialog.dialog('option', 'height', 'auto');
             }
             else {
@@ -1158,7 +1169,7 @@ function wrapper(plugin_info) {
         // Setup for Use of Toolbox
       	$(`<a href="#" title="${self.interfaceData.toolbox.title}">`)
        		.text(self.interfaceData.toolbox.text)
-       		.click(self.interfaceTabs.main.showDialog)
+       		.click(self.interfaceDialogs.main.showDialog)
        		.appendTo($('#toolbox'));
 
         window.addHook('portalDetailsUpdated', self.interfacePortalDetails.handler);
