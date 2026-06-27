@@ -33,19 +33,6 @@ function wrapper(plugin_info) {
         settings: true,
     });
 
-/* 
-** Building Outside of IITC Build Envronment - Do I Use These?
-**
-    // Name of the IITC build for first-party plugins
-    plugin_info.buildName = "PortalDetailMods";
-
-    // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "";
-
-    // ID/name of the plugin
-    plugin_info.pluginId = "portalDetailMods";
-*/
-
     self.namespace = 'window.plugin.' + self.id + '.';
     self.pluginname = 'plugin-' + self.id;
 
