@@ -52,6 +52,22 @@ async function run() {
         const metaHeader = metaParts[0] + metaDelimiter + '\n\n';
         let remainingCode = metaParts.slice(1).join(metaDelimiter);
 
+        // --- NEW: Generate the accompanying .meta.js file ---
+        // Split header into lines, filter out any line containing @icon64, and join them back
+        const metaLines = metaHeader.split(/\r?\n/);
+        const filteredMetaHeader = metaLines
+            .filter(line => !line.includes('@icon64'))
+            .join('\n');
+
+        // Determine target filename (e.g., central-inventory.user.js -> central-inventory.meta.js)
+        const metaFileName = fileName.replace('.user.js', '.meta.js');
+        const META_OUTPUT_PATH = path.join(OUTPUT_DIR, metaFileName);
+        
+        // Write the clean, icon-free meta file
+        fs.writeFileSync(META_OUTPUT_PATH, filteredMetaHeader.trim() + '\n', 'utf8');
+        console.log(`Successfully created standalone meta file: ${META_OUTPUT_PATH}`);
+        // ----------------------------------------------------
+
         // Extract the API Notes block safely by locating its opening signature
         const apiStartSignatureCRLF = '/*\r\nAPI Notes';
         const apiStartSignatureLF = '/*\nAPI Notes';
