@@ -25,11 +25,11 @@ if (!fs.existsSync(SOURCE_PATH)) {
 
 async function run() {
     try {
-        const fileDir = path.dirname(SOURCE_PATH);
+        const fileDir = "P:\\Ingress Stuff\\";
         const fileName = path.basename(SOURCE_PATH);
         
         // Define /Minified folder relative to the file location
-        const OUTPUT_DIR = path.join(fileDir, 'Release');
+        const OUTPUT_DIR = path.join(fileDir, 'My Plugins - Releases');
         const OUTPUT_PATH = path.join(OUTPUT_DIR, fileName);
 
         if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
