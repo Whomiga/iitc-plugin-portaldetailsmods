@@ -1128,6 +1128,8 @@ function wrapper(plugin_info) {
             }
             else {
                 // Check for Version Changes Here then Reset Version
+                if (localData.settings.versionData) {
+                }
                 delete localData.settings.versionData;
 
                 // Deep Merge
