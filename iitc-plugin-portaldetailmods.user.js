@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.7.0
+// @version        1.8.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -21,7 +21,7 @@ function wrapper(plugin_info) {
     var self = window.plugin.PortalDetailMods;
     self.id = 'PortalDetailMods';
     self.title = 'PortalDetailMods';
-    self.version = '1.7.0.20260701.112100';
+    self.version = '1.8.0.20260711.083800';
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
 
@@ -603,6 +603,27 @@ function wrapper(plugin_info) {
         }
     };
 
+/***********************/
+/* Auxiliary Functions */
+/***********************/
+
+    /*
+    ** Determine if old Version is older than new Version
+    */
+    function isOlder(v1, v2) {
+        const parts1 = v1.split('.').map(Number);
+        const parts2 = v2.split('.').map(Number);
+  
+        for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+            const num1 = parts1[i] || 0;
+            const num2 = parts2[i] || 0;
+    
+            if (num1 < num2) return true;
+            if (num1 > num2) return false;
+        }
+        return false;
+    }
+
 /**********************************/
 /* Console Debug/Output Functions */
 /**********************************/
@@ -1106,6 +1127,9 @@ function wrapper(plugin_info) {
                 localStorage_Save();
             }
             else {
+                // Check for Version Changes Here then Reset Version
+                delete localData.settings.versionData;
+
                 // Deep Merge
                 $.extend(true, self.settings, localData.settings);
                 localStorage_Save();
