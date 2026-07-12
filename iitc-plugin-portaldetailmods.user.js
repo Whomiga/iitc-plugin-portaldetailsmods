@@ -9,6 +9,7 @@
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
 // @match          *://intel.ingress.com/*
 // @grant          none
+// @autobuild
 // ==/UserScript==
 
 function wrapper(plugin_info) {
