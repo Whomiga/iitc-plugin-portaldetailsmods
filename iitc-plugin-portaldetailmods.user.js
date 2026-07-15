@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.8.0
+// @version        1.9.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -20,11 +20,14 @@ function wrapper(plugin_info) {
 
     window.plugin.PortalDetailMods = function () {};
     var self = window.plugin.PortalDetailMods;
-    self.id = 'PortalDetailMods';
+    self.id = 'portaldetailmods';
     self.title = 'PortalDetailMods';
-    self.version = '1.8.0.20260711.083800';
+    self.version = '1.9.0.20260715.171000';
     self.prefix = 'portaldetailmods-';
     self.author = 'Whomiga';
+    self.changelog = [
+        { version: "1.9.0", changes: ["Added Changelog"] }
+    ];
 
     // Debug Output
     self.debugTypes = Object.freeze({
@@ -1209,6 +1212,8 @@ function wrapper(plugin_info) {
 
     // Add the Script Info Data to the function as a Property
     setup.info = plugin_info;
+    setup.info.pluginId = self.pluginname;
+    setup.info.changelog = self.changelog;
     if(!window.bootPlugins) window.bootPlugins = [];
     window.bootPlugins.push(setup);
 
