@@ -672,7 +672,7 @@ function wrapper(plugin_info) {
     function debugOutput(debugType, consoleType, ...args) {
         if ((self.debugTypes.enabled) || (debugType == 'force')) {
             if ((self.debugTypes[debugType])||(debugType === 'force')||(debugType === 'always')) {
-                console[consoleType]?.(...args);
+                console[consoleType]?.(self.title, ...args);
             }
         }
     }
@@ -1125,7 +1125,7 @@ function wrapper(plugin_info) {
         if ('settings' in localData && localData.settings instanceof Object) {
             if (localData.settings.imageMode) {
                 // Update for version 0.20.0
-                outputLog(self.title + " - Updated settings for 0.20.0");
+                outputLog("- Updated settings for 0.20.0");
                 let tempsettings = { elementData: { ...localData.settings } };
                 // Deep Merge Of Fixed Settings
                 $.extend(true, self.settings, tempsettings);
@@ -1163,7 +1163,7 @@ function wrapper(plugin_info) {
 /***********************/
 	self.setup = function() {
         if ('pluginloaded' in self) {
-            outputLog('IITC plugin already loaded: ' + self.title + ' version ' + self.version);
+            console.log('IITC plugin already loaded: ' + self.title + ' version ' + self.version);
             return;
         } 
         else {
@@ -1175,8 +1175,8 @@ function wrapper(plugin_info) {
         self.interfaceData.themes = self.interfaceThemes;
 
         // Debug Output
-        debugLog('lists',    self.title, self.interfaceLists);
-        debugLog('settings', self.title, self.settings);
+        debugLog('lists',    self.interfaceLists);
+        debugLog('settings', self.settings);
     
         // Init Local Storage and Load Settings
         localStorage_Init();
@@ -1205,7 +1205,7 @@ function wrapper(plugin_info) {
         //
         window.addEventListener('resize', dialog_WindowResize);
 
-        outputLog('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
+        console.log('IITC plugin loaded: ' + self.title + ' version ' + self.version + " ");
     };
 
     var setup = function() {
