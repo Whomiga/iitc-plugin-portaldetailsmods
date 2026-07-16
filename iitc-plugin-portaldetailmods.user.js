@@ -13,17 +13,19 @@
 // ==/UserScript==
 
 function wrapper(plugin_info) {
+    // Definition for PortalDetailMods ID
+    const plugin_id = 'portaldetailmods';
 
     // Make sure that window.plugin exists. IITC defines it as a no-op function,
     // and other plugins assume the same.
     if (typeof window.plugin !== "function") window.plugin = function () {};
 
-    window.plugin.PortalDetailMods = function () {};
-    var self = window.plugin.PortalDetailMods;
-    self.id = 'portaldetailmods';
+    window.plugin[plugin_id] = function () {};
+    var self = window.plugin[plugin_id];
+    self.id = plugin_id;
     self.title = 'PortalDetailMods';
     self.version = '1.9.0.20260715.171000';
-    self.prefix = 'portaldetailmods-';
+    self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
         { version: "1.9.0", changes: ["Added Changelog"] }
