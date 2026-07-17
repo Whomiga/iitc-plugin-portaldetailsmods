@@ -332,7 +332,7 @@ function wrapper(plugin_info) {
 /**********************************************************/
 /* Settings - Structure, Creation and Auxiliary Functions */
 /**********************************************************/
-    const KEY_SETTINGS = "plugin-portaldetailmods";
+    const KEY_SETTINGS = self.pluginname;
     const SETTINGS_PREFIX = self.prefix + "settings--";
 
     /*
