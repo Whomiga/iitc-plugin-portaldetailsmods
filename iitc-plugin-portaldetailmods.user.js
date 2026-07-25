@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.9.0
+// @version        1.10.0
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,11 +24,13 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.9.0.20260715.171000';
+    self.version = '1.10.0.20260725.182900';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
-        { version: "1.9.0", changes: ["Added Changelog"] }
+        { version: "1.10.0", changes: ["added hidden setting to select whether to toggle window state at selection",
+                                       "added internal methods of adding title tags to some items"] },
+        { version: "1.9.0",  changes: ["added changelog"] }
     ];
 
     // Debug Output
@@ -274,7 +276,7 @@ function wrapper(plugin_info) {
                 ok: {
                     text: 'OK',
                     // Callback Function
-                    click: dialog_handleOKButton
+                    click: main_handleOKButton
                 }
             },
             // Sections Used In Dialog
@@ -345,7 +347,9 @@ function wrapper(plugin_info) {
         },
         // Element values
         elementData: {
-            ...get_elementData(self.interfaceConfig)
+            ...get_elementData(self.interfaceConfig),
+            // Hidden Selection Value
+            ToggleOnSelection: true
         },
         // Widths of Dialogs
         dialogWidths: {
@@ -700,7 +704,12 @@ function wrapper(plugin_info) {
         let dialog_id =  self.prefix + main.key;
         let dialog = dialog_getDialog(dialog_id);
         if (dialog && dialog.dialog('isOpen')) {
-            dialog.dialog('close');
+            if (self.settings.elementData.ToggleOnSelection) {
+                dialog.dialog('close');
+            }
+            else {
+                dialog.dialog('moveToTop');
+            }
             return;
         }
 
@@ -762,6 +771,15 @@ function wrapper(plugin_info) {
         return div;
     }
 
+    // Handle Main Dialog's OK Button
+    function main_handleOKButton(e) {
+        if (e.shiftKey) {
+            self.settings.elementData.ToggleOnSelection = !self.settings.elementData.ToggleOnSelection;
+            localStorage_Save();
+        }
+        $(this).dialog('close');
+    }
+
     /*
     ** Create Sections for Settings
     */    
@@ -796,6 +814,14 @@ function wrapper(plugin_info) {
                     }
                     data = row.appendChild(document.createElement('td'));
                     var select = data.appendChild(document.createElement('select'));
+                    if (element.title) {
+                        if (element.label) {
+                            label.title = element.title;
+                        }
+                        else {
+                            select.title = element.title;
+                        }
+                    }
                     select.id = SETTINGS_PREFIX + id;
                     Object.values(element.options).forEach((value) => {
                         var option = select.appendChild(document.createElement('option'));
