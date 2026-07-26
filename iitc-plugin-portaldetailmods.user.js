@@ -777,7 +777,9 @@ function wrapper(plugin_info) {
             self.settings.elementData.ToggleOnSelection = !self.settings.elementData.ToggleOnSelection;
             localStorage_Save();
         }
-        $(this).dialog('close');
+        else {
+            $(this).dialog('close');
+        }
     }
 
     /*
