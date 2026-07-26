@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.10.0
+// @version        1.10.1
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,10 +24,11 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.10.0.20260725.182900';
+    self.version = '1.10.1.20260726.091000';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
+        { version: "1.10.1", changes: ["minimum modification to handling of hidden setting"] },
         { version: "1.10.0", changes: ["added hidden setting to select whether to toggle window state at selection",
                                        "added internal methods of adding title tags to some items"] },
         { version: "1.9.0",  changes: ["added changelog"] }
