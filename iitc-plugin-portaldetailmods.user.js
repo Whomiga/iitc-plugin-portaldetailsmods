@@ -29,7 +29,7 @@ function wrapper(plugin_info) {
     self.author = 'Whomiga';
     self.changelog = [
         { version: "1.10.1", changes: ["minimum modification to handling of hidden setting"] },
-        { version: "1.10.0", changes: ["added hidden setting (Shift 'OK') to toggle main dialog toggling state at selection",
+        { version: "1.10.0", changes: ["added Shift+'OK' hidden shortcut to toggle main dialog state on selection (open, close, or bring to front)",
                                        "added internal methods of adding title tags to some items"] },
         { version: "1.9.0",  changes: ["added changelog"] }
     ];
