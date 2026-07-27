@@ -779,7 +779,7 @@ function wrapper(plugin_info) {
             localStorage_Save();
         }
         else {
-            $(this).dialog('close');
+            dialog_handleOkButton();
         }
     }
 
