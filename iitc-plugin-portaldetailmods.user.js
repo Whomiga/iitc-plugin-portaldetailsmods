@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.10.1
+// @version        1.10.2
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,10 +24,11 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.10.1.20260726.091000';
+    self.version = '1.10.2.20260729.223800';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
+        { version: "1.10.2", changes: ["modification to fix non-functioning 'OK' button"] },
         { version: "1.10.1", changes: ["minimum modification to handling of hidden setting"] },
         { version: "1.10.0", changes: ["added Shift+'OK' hidden toggled setting to toggle main dialog action on selection (open, close, or bring to front)",
                                        "added internal methods of adding title tags to some items"] },
