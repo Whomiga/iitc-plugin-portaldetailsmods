@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.10.2
+// @version        1.10.3
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,10 +24,11 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.10.2.20260729.223800';
+    self.version = '1.10.3.20260805.134500';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
+        { version: "1.10.3", changes: ["refactored handling of setting information"] },
         { version: "1.10.2", changes: ["modification to fix non-functioning 'OK' button"] },
         { version: "1.10.1", changes: ["minimum modification to handling of hidden setting"] },
         { version: "1.10.0", changes: ["added Shift+'OK' hidden toggled setting to toggle main dialog action on selection (open, close, or bring to front)",
@@ -277,6 +278,13 @@ function wrapper(plugin_info) {
             buttons: {
                 ok: {
                     text: 'OK',
+                    // Setting Value
+                    elements: {
+                        // Toggled By Shift "OK" on Main Dialog
+                        toggleonselection: {
+                            settings: "ToggleOnSelection", [common_DefaultID]: true
+                        }
+                    },
                     // Callback Function
                     click: main_handleOKButton
                 }
@@ -350,8 +358,6 @@ function wrapper(plugin_info) {
         // Element values
         elementData: {
             ...get_elementData(self.interfaceConfig),
-            // Hidden Selection Value
-            ToggleOnSelection: true
         },
         // Widths of Dialogs
         dialogWidths: {
