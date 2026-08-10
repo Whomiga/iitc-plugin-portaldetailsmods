@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.10.3
+// @version        1.10.4
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,10 +24,11 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.10.3.20260805.134500';
+    self.version = '1.10.4.20260809.205800';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
+        { version: "1.10.4", changes: ["changed setting element names, added routine to handle"] },
         { version: "1.10.3", changes: ["refactored handling of setting information"] },
         { version: "1.10.2", changes: ["modification to fix non-functioning 'OK' button"] },
         { version: "1.10.1", changes: ["minimum modification to handling of hidden setting"] },
@@ -281,8 +282,8 @@ function wrapper(plugin_info) {
                     // Setting Value
                     elements: {
                         // Toggled By Shift "OK" on Main Dialog
-                        toggleonselection: {
-                            settings: "ToggleOnSelection", [common_DefaultID]: true
+                        maintoggle: {
+                            settings: "mainToggle", [common_DefaultID]: true
                         }
                     },
                     // Callback Function
@@ -712,7 +713,7 @@ function wrapper(plugin_info) {
         let dialog_id =  self.prefix + main.key;
         let dialog = dialog_getDialog(dialog_id);
         if (dialog && dialog.dialog('isOpen')) {
-            if (self.settings.elementData.ToggleOnSelection) {
+            if (self.settings.elementData.mainToggle) {
                 dialog.dialog('close');
             }
             else {
@@ -782,7 +783,7 @@ function wrapper(plugin_info) {
     // Handle Main Dialog's OK Button
     function main_handleOKButton(e) {
         if (e.shiftKey) {
-            self.settings.elementData.ToggleOnSelection = !self.settings.elementData.ToggleOnSelection;
+            self.settings.elementData.mainToggle = !self.settings.elementData.mainToggle;
             localStorage_Save();
         }
         else {
@@ -1171,6 +1172,15 @@ function wrapper(plugin_info) {
             else {
                 // Check for Version Changes Here then Reset Version
                 if (localData.settings.versionData) {
+                let version = localData.settings.versionData.version; 
+                    if (isOlder(version, self.version)) {
+                        switch (version) {
+                            // Update Settings If Necessary
+                            case '1.10.3.20260805.134500':
+                                localStorage_renameElementData(localData, 'ToggleOnSelection', 'mainToggle');
+                            break
+                        }
+                    }
                 }
                 delete localData.settings.versionData;
 
@@ -1180,6 +1190,13 @@ function wrapper(plugin_info) {
             }
         }
     };
+
+    function localStorage_renameElementData(localData, oldsetting, newsetting) {
+        if(oldsetting in localData.settings.elementData) {
+            self.settings.elementData[newsetting] = localData.settings.elementData[oldsetting];
+            delete localData.settings.elementData[oldsetting];
+        }
+    }
 
 /*
 ** Save Related Functions
