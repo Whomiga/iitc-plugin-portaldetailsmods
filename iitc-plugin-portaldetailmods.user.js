@@ -3,7 +3,7 @@
 // @id             portaldetailmods@Whomiga
 // @name           Portal Detail Mods
 // @category       Info
-// @version        1.10.4
+// @version        1.10.5
 // @description    Show Mod Pictures in Portal Details
 // @downloadURL    https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.user.js
 // @updateURL      https://www.missingpiece.com/ingress/IITC/iitc-plugin-portaldetailmods.meta.js
@@ -24,10 +24,11 @@ function wrapper(plugin_info) {
     var self = window.plugin[plugin_id];
     self.id = plugin_id;
     self.title = 'PortalDetailMods';
-    self.version = '1.10.4.20260809.205800';
+    self.version = '1.10.5.20260811.201500';
     self.prefix = self.id + '-';
     self.author = 'Whomiga';
     self.changelog = [
+        { version: "1.10.5", changes: ["refactored setting version update code"] }, 
         { version: "1.10.4", changes: ["changed setting element names, added routine to handle"] },
         { version: "1.10.3", changes: ["refactored handling of setting information"] },
         { version: "1.10.2", changes: ["modification to fix non-functioning 'OK' button"] },
@@ -365,6 +366,31 @@ function wrapper(plugin_info) {
             ...get_dialogWidths(self.interfaceDialogs),
         },
     };
+
+    /*
+    ** Update Settings Data when Necessary
+    */
+    function update_SettingsData(loadedSettings) {
+        if (loadedSettings.versionData) {
+            let version = loadedSettings.versionData.version; 
+            if (isOlder(version, self.version)) {
+                switch (version) {
+                    // Update Settings If Necessary
+                    case '1.10.3.20260805.134500':
+                        update_ElementData(loadedSettings, 'ToggleOnSelection', 'mainToggle');
+                    break
+                }
+            }
+        }
+        delete loadedSettings.versionData;
+    }
+
+    function update_ElementData(loadedSettings, oldSetting, newSetting) {
+        if(oldSetting in loadedSettings.elementData) {
+            self.settings.elementData[newSetting] = loadedSettings.elementData[oldSetting];
+            delete loadedSettings.elementData[oldSetting];
+        }
+    }
 
     /*
     ** Creates Element Data structure For Settings from Interface Config or Other Interface Data
@@ -1170,19 +1196,8 @@ function wrapper(plugin_info) {
                 localStorage_Save();
             }
             else {
-                // Check for Version Changes Here then Reset Version
-                if (localData.settings.versionData) {
-                let version = localData.settings.versionData.version; 
-                    if (isOlder(version, self.version)) {
-                        switch (version) {
-                            // Update Settings If Necessary
-                            case '1.10.3.20260805.134500':
-                                localStorage_renameElementData(localData, 'ToggleOnSelection', 'mainToggle');
-                            break
-                        }
-                    }
-                }
-                delete localData.settings.versionData;
+                // Check for Version Changes and Update Version and Data Where Necessary
+                update_SettingsData(localData.settings);
 
                 // Deep Merge
                 $.extend(true, self.settings, localData.settings);
@@ -1190,13 +1205,6 @@ function wrapper(plugin_info) {
             }
         }
     };
-
-    function localStorage_renameElementData(localData, oldsetting, newsetting) {
-        if(oldsetting in localData.settings.elementData) {
-            self.settings.elementData[newsetting] = localData.settings.elementData[oldsetting];
-            delete localData.settings.elementData[oldsetting];
-        }
-    }
 
 /*
 ** Save Related Functions
